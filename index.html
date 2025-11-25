@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <title>Softphone Web WSS</title>
+  <script src="./jssip.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f4f8;
+      margin: 0;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .card {
+      width: 400px;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+    h2 {
+      margin-top: 0;
+      text-align: center;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #c9c9c9;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      background: #4a7cff;
+      color: white;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background: #3a67d6;
+    }
+    #log {
+      width: 400px;
+      background: #0d1117;
+      color: #c9d1d9;
+      padding: 20px;
+      border-radius: 12px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      height: 250px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Softphone Web (WSS)</h2>
+
+    <label>Servidor WSS</label>
+    <input id="wss" value="wss://seuservidor.com:7443" />
+
+    <label>Usuário SIP</label>
+    <input id="user" value="1001" />
+
+    <label>Domínio SIP</label>
+    <input id="domain" value="seuservidor.com" />
+
+    <label>Senha</label>
+    <input id="pass" type="password" />
+
+    <button onclick="registrar()">Registrar</button>
+  </div>
+
+  <div class="card">
+    <h2>Fazer Chamada</h2>
+
+    <label>Destino</label>
+    <input id="destino" value="11999999999" />
+
+    <button onclick="ligar()">Ligar</button>
+    <button style="background:#d9534f" onclick="desligar()">Desligar</button>
+  </div>
+
+  <div id="log"></div>
+
+  <script>
+    let ua;
+    let chamada;
+
+    function log(text) {
+      const area = document.getElementById("log");
+      area.textContent += `> ${text}
+`;
+      area.scrollTop = area.scrollHeight;
+    }
+
+   function registrar() {
+  log("Iniciando registro...");
+
+  const socket = new JsSIP.WebSocketInterface(
+    document.getElementById("wss").value
+  );
+
+  const configuration = {
+    sockets: [socket],
+    uri: `sip:${document.getElementById("user").value}@${document.getElementById("domain").value}`,
+    password: document.getElementById("pass").value,
+    register: true,
+    session_timers: false      // IMPORTANTE!
+  };
+
+  ua = new JsSIP.UA(configuration);
+
+  // REMOVER HEADERS DO INVITE AQUI
+  ua.on("newRTCSession", function (data) {
+    const session = data.session;
+
+    session.on("sending", function (e) {
+      const req = e.request;
+
+      // remove Session-Expires
+      if (req.headers["Session-Expires"]) {
+        delete req.headers["Session-Expires"];
+      }
+
+      // remove Min-SE
+      if (req.headers["Min-SE"]) {
+        delete req.headers["Min-SE"];
+      }
+
+      // remove "timer" de Supported
+      if (req.headers["Supported"]) {
+        req.headers["Supported"][0] = req.headers["Supported"][0]
+          .replace("timer", "")
+          .replace(",,", ",")
+          .replace(/,$/, "");
+      }
+
+      log("🚫 Removendo Session-Expires, Min-SE e timer do INVITE");
+    });
+  });
+
+  ua.on("registered", () => log("📞 Registrado com sucesso!"));
+  ua.on("registrationFailed", (e) => log("❌ Falha no registro: " + e.cause));
+
+  JsSIP.debug.enable('JsSIP:*');
+  ua.start();
+}
+
+
+    function ligar() {
+  if (!ua) return alert("Registre primeiro!");
+
+  const destino = document.getElementById("destino").value;
+
+  log(`Discando para ${destino}...`);
+
+  chamada = ua.call(
+    `sip:${destino}@${document.getElementById("domain").value}`,
+    {
+      sessionTimers: false,
+      mediaConstraints: { audio: true, video: false }
+    }
+  );
+
+  chamada.on("progress", () => log("🔄 Chamando..."));
+  chamada.on("confirmed", () => log("☎ Chamada atendida!"));
+  chamada.on("ended", () => log("📴 Chamada encerrada"));
+  chamada.on("failed", (e) => log("❌ Falha: " + e.cause));
+}
+
+    function desligar() {
+      if (chamada) {
+        chamada.terminate();
+        log("🔚 Enviando BYE...");
+      } else {
+        log("Nenhuma chamada ativa.");
+      }
+    }
+
+    ua.on("newRTCSession", function (data) {
+  const session = data.session;
+
+  session.on("sending", function (e) {
+    // Intercepta o INVITE antes do envio
+    const req = e.request;
+
+    // Remove Session-Expires
+    if (req.headers["Session-Expires"]) {
+      delete req.headers["Session-Expires"];
+    }
+
+    // Remove Min-SE
+    if (req.headers["Min-SE"]) {
+      delete req.headers["Min-SE"];
+    }
+
+    // Remove 'timer' do Supported
+    if (req.headers["Supported"]) {
+      req.headers["Supported"][0] = req.headers["Supported"][0]
+        .replace("timer", "")
+        .replace(",,", ",")
+        .replace(/,$/, "");
+    }
+
+    log("🚫 Removendo Session-Expires, Min-SE e timer do INVITE");
+  });
+});
+
+  </script>
+</body>
+</html>
