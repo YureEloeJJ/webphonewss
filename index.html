@@ -1,221 +1,2738 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <title>Softphone Web WSS</title>
-  <script src="./jssip.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <!-- Nome do projeto atualizado -->
+  <meta name="description" content="Softphone WSS - Sistema de telefonia VoIP WebSocket">
+  <title>Softphone WSS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f4f8;
+    *, *::before, *::after {
       margin: 0;
-      padding: 40px;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --transition-fast: 0.15s ease;
+      --transition: 0.25s ease;
+      --radius-sm: 6px;
+      --radius: 10px;
+      --radius-lg: 14px;
+    }
+
+    /* Dark Theme */
+    [data-theme="dark"] {
+      --bg-base: #08080c;
+      --bg-primary: #0c0c12;
+      --bg-secondary: #13131b;
+      --bg-tertiary: #1a1a24;
+      --bg-input: #1e1e2a;
+      --bg-hover: #252532;
+      --text-primary: #f4f4f6;
+      --text-secondary: #9898a8;
+      --text-muted: #5c5c6e;
+      --border: #26263a;
+      --border-focus: #3b82f6;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-glow: rgba(59, 130, 246, 0.25);
+      --success: #10b981;
+      --success-hover: #059669;
+      --success-glow: rgba(16, 185, 129, 0.3);
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --danger-glow: rgba(239, 68, 68, 0.3);
+      --warning: #f59e0b;
+      --warning-glow: rgba(245, 158, 11, 0.3);
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Light Theme */
+    [data-theme="light"] {
+      --bg-base: #f5f7fa;
+      --bg-primary: #ffffff;
+      --bg-secondary: #f8f9fb;
+      --bg-tertiary: #eef1f5;
+      --bg-input: #e8ecf2;
+      --bg-hover: #dfe4eb;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border: #e2e8f0;
+      --border-focus: #3b82f6;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-glow: rgba(37, 99, 235, 0.15);
+      --success: #059669;
+      --success-hover: #047857;
+      --success-glow: rgba(5, 150, 105, 0.2);
+      --danger: #dc2626;
+      --danger-hover: #b91c1c;
+      --danger-glow: rgba(220, 38, 38, 0.2);
+      --warning: #d97706;
+      --warning-glow: rgba(217, 119, 6, 0.2);
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Green Theme */
+    [data-theme="green"] {
+      --bg-base: #000000;
+      --bg-primary: #050805;
+      --bg-secondary: #0a100a;
+      --bg-tertiary: #0f180f;
+      --bg-input: #121f12;
+      --bg-hover: #1a2a1a;
+      --text-primary: #b8ff00;
+      --text-secondary: #7cb800;
+      --text-muted: #3d6400;
+      --border: #1a3a1a;
+      --border-focus: #b8ff00;
+      --accent: #b8ff00;
+      --accent-hover: #9adf00;
+      --accent-glow: rgba(184, 255, 0, 0.2);
+      --success: #b8ff00;
+      --success-hover: #9adf00;
+      --success-glow: rgba(184, 255, 0, 0.3);
+      --danger: #ff3333;
+      --danger-hover: #cc2222;
+      --danger-glow: rgba(255, 51, 51, 0.3);
+      --warning: #ffcc00;
+      --warning-glow: rgba(255, 204, 0, 0.3);
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.8);
+    }
+
+    html {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-base);
+      min-height: 100vh;
+      min-height: 100dvh;
+      color: var(--text-primary);
+      transition: background var(--transition), color var(--transition);
+      line-height: 1.5;
+    }
+
+    .app {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 12px;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    .logo-icon svg {
+      width: 18px;
+      height: 18px;
+      fill: #fff;
+    }
+
+    [data-theme="green"] .logo-icon svg {
+      fill: #000;
+    }
+
+    .logo-text {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+
+    /* Badge WSS adicionado */
+    .logo-badge {
+      font-size: 9px;
+      font-weight: 600;
+      background: var(--accent);
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-left: -4px;
+    }
+
+    [data-theme="green"] .logo-badge {
+      color: #000;
+    }
+
+    /* Theme Switcher */
+    .theme-switcher {
+      display: flex;
+      gap: 3px;
+      background: var(--bg-secondary);
+      padding: 3px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+    }
+
+    .theme-btn {
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      transition: all var(--transition-fast);
+      position: relative;
+    }
+
+    .theme-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+
+    .theme-btn:hover::before {
+      opacity: 0.1;
+    }
+
+    .theme-btn.active {
+      background: var(--accent);
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    .theme-btn svg {
+      width: 14px;
+      height: 14px;
+      fill: var(--text-muted);
+      position: relative;
+      z-index: 1;
+      transition: fill var(--transition-fast);
+    }
+
+    .theme-btn:hover svg {
+      fill: var(--text-secondary);
+    }
+
+    .theme-btn.active svg {
+      fill: #fff;
+    }
+
+    [data-theme="green"] .theme-btn.active svg {
+      fill: #000;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .status-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--danger);
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .status-dot::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: inherit;
+      opacity: 0;
+      animation: none;
+    }
+
+    .status-dot.online {
+      background: var(--success);
+    }
+
+    .status-dot.online::after {
+      opacity: 0.4;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .status-dot.connecting {
+      background: var(--warning);
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.4; }
+      50% { transform: scale(1.5); opacity: 0; }
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .status-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    .status-user {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 2px;
+      background: var(--bg-secondary);
+      padding: 3px;
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px 8px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      position: relative;
+    }
+
+    .tab::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 1px;
+      transition: width var(--transition-fast);
+    }
+
+    .tab:hover {
+      color: var(--text-secondary);
+    }
+
+    .tab.active {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab.active::after {
+      width: 20px;
+    }
+
+    /* Panels */
+    .panel {
+      display: none;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .panel.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Config Form */
+    .config-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+      transition: all var(--transition-fast);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .form-input.error {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 3px var(--danger-glow);
+      animation: shake 0.3s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 100%);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+
+    .btn:hover::before {
+      opacity: 1;
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    [data-theme="green"] .btn-primary {
+      color: #000;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+      box-shadow: 0 2px 8px var(--success-glow);
+    }
+
+    .btn-success:hover:not(:disabled) {
+      background: var(--success-hover);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: var(--danger-hover);
+    }
+
+    .btn-outline {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .btn-outline:hover:not(:disabled) {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+      border-color: var(--text-muted);
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* Dialer */
+    .dialer-display {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 12px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dialer-display::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+    }
+
+    .dialer-number {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      min-height: 40px;
+      color: var(--text-primary);
+      word-break: break-all;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .dialer-status {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    .call-timer {
+      font-size: 16px;
+      color: var(--success);
+      font-weight: 700;
+      margin-top: 8px;
+      display: none;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .call-timer.active {
+      display: block;
+    }
+
+    /* Voice Animation - Melhorada */
+    .voice-animation {
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: none;
+      align-items: flex-end;
+      gap: 3px;
+      height: 40px;
+      padding: 4px;
+      background: var(--bg-tertiary);
+      border-radius: 8px;
+    }
+
+    .voice-animation.active {
+      display: flex;
+    }
+
+    .voice-bar {
+      width: 4px;
+      background: linear-gradient(to top, var(--success), var(--success-hover));
+      border-radius: 2px;
+      transform-origin: bottom;
+    }
+
+    .voice-bar:nth-child(1) { animation: voice1 0.5s ease-in-out infinite; }
+    .voice-bar:nth-child(2) { animation: voice2 0.4s ease-in-out infinite 0.1s; }
+    .voice-bar:nth-child(3) { animation: voice3 0.6s ease-in-out infinite 0.05s; }
+    .voice-bar:nth-child(4) { animation: voice4 0.45s ease-in-out infinite 0.15s; }
+    .voice-bar:nth-child(5) { animation: voice5 0.55s ease-in-out infinite 0.08s; }
+
+    @keyframes voice1 { 0%, 100% { height: 8px; } 50% { height: 28px; } }
+    @keyframes voice2 { 0%, 100% { height: 12px; } 50% { height: 32px; } }
+    @keyframes voice3 { 0%, 100% { height: 6px; } 50% { height: 24px; } }
+    @keyframes voice4 { 0%, 100% { height: 10px; } 50% { height: 30px; } }
+    @keyframes voice5 { 0%, 100% { height: 8px; } 50% { height: 20px; } }
+
+    /* Keypad */
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .key {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 8px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
       display: flex;
       flex-direction: column;
       align-items: center;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
     }
-    .card {
-      width: 400px;
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      margin-bottom: 30px;
+
+    .key:hover {
+      background: var(--bg-hover);
+      border-color: var(--text-muted);
+      transform: scale(1.02);
     }
-    h2 {
-      margin-top: 0;
+
+    .key:active {
+      transform: scale(0.95);
+      background: var(--bg-tertiary);
+    }
+
+    .key-number {
+      font-size: 22px;
+      font-weight: 600;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .key-letters {
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      margin-top: 4px;
+      height: 11px;
+      font-weight: 500;
+    }
+
+    /* Call Controls */
+    .call-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+
+    .call-btn {
+      padding: 14px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .call-btn svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .call-btn.call {
+      background: var(--success);
+      box-shadow: 0 2px 12px var(--success-glow);
+    }
+
+    .call-btn.call:hover:not(:disabled) {
+      background: var(--success-hover);
+      transform: scale(1.02);
+    }
+
+    .call-btn.call:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    .call-btn.call svg {
+      fill: #fff;
+    }
+
+    .call-btn.hangup {
+      background: var(--danger);
+      box-shadow: 0 2px 12px var(--danger-glow);
+    }
+
+    .call-btn.hangup:hover:not(:disabled) {
+      background: var(--danger-hover);
+      transform: scale(1.02);
+    }
+
+    .call-btn.hangup:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    .call-btn.hangup svg {
+      fill: #fff;
+    }
+
+    .call-btn.clear {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .call-btn.clear:hover {
+      background: var(--bg-hover);
+    }
+
+    .call-btn.clear svg {
+      fill: var(--text-secondary);
+    }
+
+    .btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* Log Panel - Melhorado */
+    .log-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .log-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .log-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .log-count {
+      font-size: 10px;
+      color: var(--text-muted);
+      background: var(--bg-tertiary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 8px;
+    }
+
+    .log-clear-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+    }
+
+    .log-clear-btn:hover {
+      color: var(--accent);
+      background: var(--bg-hover);
+    }
+
+    .log-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 12px;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 11px;
+      line-height: 1.7;
+      min-height: 0;
+    }
+
+    .log-entry {
+      padding: 4px 0;
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid transparent;
+      border-radius: 4px;
+      margin-bottom: 2px;
+    }
+
+    .log-entry:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .log-time {
+      color: var(--text-muted);
+      flex-shrink: 0;
+      font-weight: 500;
+      font-size: 10px;
+    }
+
+    .log-type {
+      font-size: 9px;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 1px 4px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .log-type.success { background: var(--success-glow); color: var(--success); }
+    .log-type.error { background: var(--danger-glow); color: var(--danger); }
+    .log-type.warning { background: var(--warning-glow); color: var(--warning); }
+    .log-type.info { background: var(--accent-glow); color: var(--accent); }
+    .log-type.debug { background: var(--bg-tertiary); color: var(--text-muted); }
+
+    .log-msg {
+      color: var(--text-secondary);
+      word-break: break-word;
+      flex: 1;
+    }
+
+    .log-msg.success { color: var(--success); }
+    .log-msg.error { color: var(--danger); }
+    .log-msg.warning { color: var(--warning); }
+    .log-msg.info { color: var(--accent); }
+
+    /* Export/Import Buttons */
+    .data-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .data-actions .btn {
+      flex: 1;
+      padding: 12px;
+      font-size: 12px;
+    }
+
+    /* Incoming Call Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--bg-secondary);
+      border-radius: 24px;
+      padding: 32px 28px;
+      text-align: center;
+      border: 1px solid var(--border);
+      width: 100%;
+      max-width: 300px;
+      animation: modalIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: var(--shadow);
+    }
+
+    @keyframes modalIn {
+      from {
+        opacity: 0;
+        transform: scale(0.85) translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .modal-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--success), var(--success-hover));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      animation: ring 0.6s ease-in-out infinite;
+      box-shadow: 0 4px 20px var(--success-glow);
+    }
+
+    .modal-icon svg {
+      width: 30px;
+      height: 30px;
+      fill: #fff;
+    }
+
+    @keyframes ring {
+      0%, 100% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(12deg) scale(1.05); }
+      75% { transform: rotate(-12deg) scale(1.05); }
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .modal-subtitle {
+      color: var(--text-muted);
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .modal-buttons .btn {
+      flex: 1;
+      padding: 14px;
+    }
+
+    /* Scrollbar */
+    .log-area::-webkit-scrollbar,
+    .config-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .log-area::-webkit-scrollbar-track,
+    .config-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .log-area::-webkit-scrollbar-thumb,
+    .config-scroll::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    .log-area::-webkit-scrollbar-thumb:hover,
+    .config-scroll::-webkit-scrollbar-thumb:hover {
+      background: var(--text-muted);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      padding: 12px 20px;
+      border-radius: var(--radius);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      opacity: 0;
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 1001;
+      box-shadow: var(--shadow);
+      max-width: 90%;
       text-align: center;
     }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      margin-bottom: 15px;
-      border-radius: 8px;
-      border: 1px solid #c9c9c9;
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
     }
-    button {
-      width: 100%;
-      padding: 12px;
+
+    .toast.success {
+      border-left: 3px solid var(--success);
+    }
+
+    .toast.error {
+      border-left: 3px solid var(--danger);
+    }
+
+    .toast.warning {
+      border-left: 3px solid var(--warning);
+    }
+
+    /* Credits Popup totalmente redesenhado */
+    .credits-popup {
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 0;
+      font-size: 12px;
+      color: var(--text-secondary);
+      box-shadow: var(--shadow), 0 0 0 1px var(--border);
+      z-index: 100;
+      width: 220px;
+      overflow: hidden;
+      animation: slideInCredits 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .credits-popup.hidden {
+      display: none;
+    }
+
+    @keyframes slideInCredits {
+      from {
+        opacity: 0;
+        transform: translateX(40px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+    }
+
+    .credits-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .credits-title {
+      font-weight: 700;
+      color: var(--text-primary);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .credits-close {
+      background: none;
       border: none;
-      background: #4a7cff;
-      color: white;
-      font-size: 16px;
-      border-radius: 8px;
+      color: var(--text-muted);
       cursor: pointer;
-      margin-top: 10px;
+      font-size: 16px;
+      line-height: 1;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
     }
-    button:hover {
-      background: #3a67d6;
+
+    .credits-close:hover {
+      color: var(--text-primary);
+      background: var(--bg-hover);
     }
-    #log {
-      width: 400px;
-      background: #0d1117;
-      color: #c9d1d9;
-      padding: 20px;
-      border-radius: 12px;
-      font-family: monospace;
-      white-space: pre-wrap;
-      height: 250px;
-      overflow-y: auto;
+
+    .credits-body {
+      padding: 14px;
+    }
+
+    .credits-item {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 12px;
+    }
+
+    .credits-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .credits-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .credits-name {
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .credits-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 10px 0;
+    }
+
+    /* Hidden */
+    #remoteAudio,
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    /* Focus Visible */
+    button:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Media Queries */
+    @media (max-width: 420px) {
+      .app {
+        padding: 10px;
+      }
+
+      .dialer-number {
+        font-size: 24px;
+      }
+
+      .key {
+        padding: 12px 6px;
+      }
+
+      .key-number {
+        font-size: 20px;
+      }
+
+      .credits-popup {
+        width: 190px;
+        right: 10px;
+        bottom: 10px;
+      }
+    }
+
+    @media (min-height: 800px) {
+      .keypad {
+        gap: 10px;
+      }
+
+      .key {
+        padding: 18px 10px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2>Softphone Web (WSS)</h2>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        </div>
+        <!-- Nome e badge WSS -->
+        <span class="logo-text">Softphone</span>
+        <span class="logo-badge">WSS</span>
+      </div>
 
-    <label>Servidor WSS</label>
-    <input id="wss" value="wss://seuservidor.com:7443" />
+      <div class="theme-switcher" role="group" aria-label="Selecionar tema">
+        <button class="theme-btn active" data-theme="dark" title="Tema Escuro" aria-pressed="true">
+          <svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>
+        </button>
+        <button class="theme-btn" data-theme="light" title="Tema Claro" aria-pressed="false">
+          <svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg>
+        </button>
+        <button class="theme-btn" data-theme="green" title="Tema Verde" aria-pressed="false">
+          <svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 21.34l1.89.66.95-2.3c.48.17.98.3 1.34.3C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8z"/></svg>
+        </button>
+      </div>
+    </header>
 
-    <label>Usuário SIP</label>
-    <input id="user" value="1001" />
+    <!-- Status Bar -->
+    <div class="status-bar" role="status" aria-live="polite">
+      <div class="status-info">
+        <span class="status-dot" id="statusDot" aria-hidden="true"></span>
+        <span class="status-text" id="statusText">Desconectado</span>
+      </div>
+      <span class="status-user" id="statusUser">-</span>
+    </div>
 
-    <label>Domínio SIP</label>
-    <input id="domain" value="seuservidor.com" />
+    <!-- Tabs -->
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-tab="dialer" role="tab" aria-selected="true">Discador</button>
+      <button class="tab" data-tab="config" role="tab" aria-selected="false">Config</button>
+      <button class="tab" data-tab="log" role="tab" aria-selected="false">Log</button>
+    </nav>
 
-    <label>Senha</label>
-    <input id="pass" type="password" />
+    <!-- Dialer Panel -->
+    <section class="panel active" id="panel-dialer" role="tabpanel">
+      <div class="dialer-display">
+        <div class="voice-animation" id="voiceAnimation" aria-hidden="true">
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+          <div class="voice-bar"></div>
+        </div>
+        <div class="dialer-number" id="dialerNumber" aria-live="polite">&nbsp;</div>
+        <div class="dialer-status" id="dialerStatus">Digite o numero</div>
+        <div class="call-timer" id="callTimer" aria-live="polite">00:00</div>
+      </div>
 
-    <button onclick="registrar()">Registrar</button>
+      <div class="keypad" role="group" aria-label="Teclado numerico">
+        <button class="key" data-key="1" aria-label="1">
+          <span class="key-number">1</span>
+          <span class="key-letters" aria-hidden="true"></span>
+        </button>
+        <button class="key" data-key="2" aria-label="2 ABC">
+          <span class="key-number">2</span>
+          <span class="key-letters" aria-hidden="true">ABC</span>
+        </button>
+        <button class="key" data-key="3" aria-label="3 DEF">
+          <span class="key-number">3</span>
+          <span class="key-letters" aria-hidden="true">DEF</span>
+        </button>
+        <button class="key" data-key="4" aria-label="4 GHI">
+          <span class="key-number">4</span>
+          <span class="key-letters" aria-hidden="true">GHI</span>
+        </button>
+        <button class="key" data-key="5" aria-label="5 JKL">
+          <span class="key-number">5</span>
+          <span class="key-letters" aria-hidden="true">JKL</span>
+        </button>
+        <button class="key" data-key="6" aria-label="6 MNO">
+          <span class="key-number">6</span>
+          <span class="key-letters" aria-hidden="true">MNO</span>
+        </button>
+        <button class="key" data-key="7" aria-label="7 PQRS">
+          <span class="key-number">7</span>
+          <span class="key-letters" aria-hidden="true">PQRS</span>
+        </button>
+        <button class="key" data-key="8" aria-label="8 TUV">
+          <span class="key-number">8</span>
+          <span class="key-letters" aria-hidden="true">TUV</span>
+        </button>
+        <button class="key" data-key="9" aria-label="9 WXYZ">
+          <span class="key-number">9</span>
+          <span class="key-letters" aria-hidden="true">WXYZ</span>
+        </button>
+        <button class="key" data-key="*" aria-label="Asterisco">
+          <span class="key-number">*</span>
+          <span class="key-letters" aria-hidden="true"></span>
+        </button>
+        <button class="key" data-key="0" aria-label="0">
+          <span class="key-number">0</span>
+          <span class="key-letters" aria-hidden="true">+</span>
+        </button>
+        <button class="key" data-key="#" aria-label="Cerquilha">
+          <span class="key-number">#</span>
+          <span class="key-letters" aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <div class="call-controls">
+        <button class="call-btn clear" id="btnClear" title="Apagar" aria-label="Apagar numero">
+          <svg viewBox="0 0 24 24"><path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/></svg>
+        </button>
+        <button class="call-btn call" id="btnCall" disabled title="Ligar" aria-label="Fazer ligacao">
+          <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        </button>
+        <button class="call-btn hangup" id="btnHangup" disabled title="Desligar" aria-label="Encerrar ligacao">
+          <svg viewBox="0 0 24 24"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08c-.18-.17-.29-.42-.29-.7 0-.28.11-.53.29-.71C3.34 8.78 7.46 7 12 7s8.66 1.78 11.71 4.67c.18.18.29.43.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.11-.7-.28-.79-.74-1.69-1.36-2.67-1.85-.33-.16-.56-.5-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Config Panel -->
+    <section class="panel" id="panel-config" role="tabpanel">
+      <div class="config-scroll">
+        <div class="form-group">
+          <label class="form-label" for="wss">Servidor WSS</label>
+          <input type="url" class="form-input" id="wss" placeholder="wss://servidor.com:7443" autocomplete="url" spellcheck="false">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="user">Usuario</label>
+            <input type="text" class="form-input" id="user" placeholder="1001" autocomplete="username" spellcheck="false">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="domain">Dominio</label>
+            <input type="text" class="form-input" id="domain" placeholder="servidor.com" autocomplete="off" spellcheck="false">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pass">Senha</label>
+          <input type="password" class="form-input" id="pass" placeholder="Sua senha SIP" autocomplete="current-password">
+        </div>
+
+        <button class="btn btn-primary" id="btnRegister" type="button">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          <span id="btnRegisterText">Conectar</span>
+        </button>
+
+        <div class="data-actions">
+          <button class="btn btn-outline" id="btnExport" type="button">Exportar JSON</button>
+          <button class="btn btn-outline" id="btnImport" type="button">Importar JSON</button>
+        </div>
+        <input type="file" id="fileImport" accept=".json" class="sr-only">
+      </div>
+    </section>
+
+    <!-- Log Panel - Melhorado -->
+    <section class="panel" id="panel-log" role="tabpanel">
+      <div class="log-container">
+        <div class="log-header">
+          <div style="display:flex;align-items:center;">
+            <span class="log-title">Eventos</span>
+            <span class="log-count" id="logCount">0</span>
+          </div>
+          <button class="log-clear-btn" id="btnClearLog" type="button">Limpar</button>
+        </div>
+        <div class="log-area" id="logArea" role="log" aria-live="polite"></div>
+      </div>
+    </section>
   </div>
 
-  <div class="card">
-    <h2>Fazer Chamada</h2>
-
-    <label>Destino</label>
-    <input id="destino" value="11999999999" />
-
-    <button onclick="ligar()">Ligar</button>
-    <button style="background:#d9534f" onclick="desligar()">Desligar</button>
+  <!-- Incoming Call Modal -->
+  <div class="modal-overlay" id="incomingModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+      </div>
+      <div class="modal-title" id="modalTitle">Chamada Recebida</div>
+      <div class="modal-subtitle" id="callerNumber">Desconhecido</div>
+      <div class="modal-buttons">
+        <button class="btn btn-success" id="btnAnswer" type="button">Atender</button>
+        <button class="btn btn-danger" id="btnReject" type="button">Rejeitar</button>
+      </div>
+    </div>
   </div>
 
-  <div id="log"></div>
+  <!-- Toast -->
+  <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
+
+  <!-- Credits Popup redesenhado -->
+  <aside class="credits-popup" id="creditsPopup">
+    <div class="credits-header">
+      <span class="credits-title">Creditos</span>
+      <button class="credits-close" id="closeCreditsBtn" aria-label="Fechar creditos">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <div class="credits-body">
+      <div class="credits-item">
+        <span class="credits-label">Ideia / Criacao</span>
+        <span class="credits-name">Yure</span>
+      </div>
+      <div class="credits-divider"></div>
+      <div class="credits-item">
+        <span class="credits-label">UI Design / Performance</span>
+        <span class="credits-name">Lucas Lima</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Remote Audio -->
+  <audio id="remoteAudio" autoplay playsinline></audio>
+
+  <!-- JsSIP Library -->
+  <script src="./jssip.min.js"></script>
 
   <script>
-    let ua;
-    let chamada;
+    /**
+     * Softphone WSS - Sistema VoIP WebSocket
+     * @version 4.1
+     * @description Softphone profissional com logs detalhados e tratamento robusto de erros
+     */
+    (function() {
+      'use strict';
 
-    function log(text) {
-      const area = document.getElementById("log");
-      area.textContent += `> ${text}
-`;
-      area.scrollTop = area.scrollHeight;
-    }
+      // ============================================
+      // CONSTANTS
+      // ============================================
+      const VERSION = '4.1';
+      const APP_NAME = 'Softphone WSS';
+      
+      const STORAGE_KEYS = Object.freeze({
+        CONFIG: 'softphone_wss_config',
+        THEME: 'softphone_wss_theme',
+        LOGS: 'softphone_wss_logs',
+        CREDITS_CLOSED: 'softphone_wss_credits_closed'
+      });
 
-   function registrar() {
-  log("Iniciando registro...");
+      const MAX_LOGS = 300;
+      const TOAST_DURATION = 3500;
+      const STATUS_RESET_DELAY = 2500;
+      const SAVE_DEBOUNCE_MS = 500;
 
-  const socket = new JsSIP.WebSocketInterface(
-    document.getElementById("wss").value
-  );
+      // Log types for categorization
+      const LOG_TYPES = Object.freeze({
+        INFO: 'info',
+        SUCCESS: 'success',
+        WARNING: 'warning',
+        ERROR: 'error',
+        DEBUG: 'debug'
+      });
 
-  const configuration = {
-    sockets: [socket],
-    uri: `sip:${document.getElementById("user").value}@${document.getElementById("domain").value}`,
-    password: document.getElementById("pass").value,
-    register: true,
-    session_timers: false      // IMPORTANTE!
-  };
+      // Error codes for better debugging
+      const ERROR_CODES = Object.freeze({
+        JSSIP_NOT_LOADED: 'E001',
+        VALIDATION: 'E002',
+        CONNECTION: 'E003',
+        REGISTRATION: 'E004',
+        CALL: 'E005',
+        MEDIA: 'E006',
+        STORAGE: 'E007',
+        NETWORK: 'E008'
+      });
 
-  ua = new JsSIP.UA(configuration);
-
-  // REMOVER HEADERS DO INVITE AQUI
-  ua.on("newRTCSession", function (data) {
-    const session = data.session;
-
-    session.on("sending", function (e) {
-      const req = e.request;
-
-      // remove Session-Expires
-      if (req.headers["Session-Expires"]) {
-        delete req.headers["Session-Expires"];
+      let jsSIPLoaded = false;
+      let jsSIPVersion = 'nao carregado';
+      
+      function checkJsSIP() {
+        if (typeof JsSIP !== 'undefined') {
+          jsSIPLoaded = true;
+          jsSIPVersion = JsSIP.version || '3.x';
+          return true;
+        }
+        return false;
       }
 
-      // remove Min-SE
-      if (req.headers["Min-SE"]) {
-        delete req.headers["Min-SE"];
+      // Verificar agora
+      checkJsSIP();
+
+      // ============================================
+      // ERROR HANDLER
+      // ============================================
+      const ErrorHandler = {
+        wrap(fn, context = 'Operacao') {
+          return function(...args) {
+            try {
+              return fn.apply(this, args);
+            } catch (error) {
+              ErrorHandler.handle(error, context);
+            }
+          };
+        },
+
+        handle(error, context, code = 'E000') {
+          const message = error?.message || String(error);
+          const stack = error?.stack;
+          
+          if (typeof Logger !== 'undefined' && Logger.error) {
+            Logger.error(`[${code}] ${context}: ${message}`);
+          }
+          
+          if (stack && typeof Logger !== 'undefined' && Logger.debug) {
+            Logger.debug(`Stack: ${stack.split('\n').slice(0, 3).join(' -> ')}`);
+          }
+          
+          if (typeof UI !== 'undefined' && UI.showToast) {
+            UI.showToast(message, 'error');
+          }
+
+          console.error(`[${APP_NAME}] [${code}] ${context}:`, error);
+        },
+
+        assert(condition, message, code = ERROR_CODES.VALIDATION) {
+          if (!condition) {
+            throw new Error(`[${code}] ${message}`);
+          }
+        },
+
+        getSIPErrorMessage(cause) {
+          const messages = {
+            'Rejected': 'Chamada rejeitada',
+            'Busy': 'Numero ocupado',
+            'No Answer': 'Sem resposta',
+            'Not Found': 'Numero nao encontrado',
+            'Address Incomplete': 'Numero incompleto',
+            'Authentication Error': 'Erro de autenticacao',
+            'Canceled': 'Chamada cancelada',
+            'Request Timeout': 'Tempo esgotado',
+            'Temporarily Unavailable': 'Temporariamente indisponivel',
+            'Service Unavailable': 'Servico indisponivel',
+            'Decline': 'Chamada recusada',
+            'SIP Failure Code': 'Erro no servidor SIP',
+            'Connection Error': 'Erro de conexao',
+            'User Denied Media Access': 'Acesso ao microfone negado',
+            'WebRTC Error': 'Erro WebRTC',
+            'Forbidden': 'Acesso negado (403)',
+            'Method Not Allowed': 'Metodo nao permitido',
+            'Request Terminated': 'Requisicao terminada',
+            'Dialog Terminated': 'Dialogo terminado',
+            'Transport Error': 'Erro de transporte',
+            'WebSocket Error': 'Erro WebSocket'
+          };
+          return messages[cause] || cause || 'Erro desconhecido';
+        }
+      };
+
+      // ============================================
+      // STORAGE MANAGER
+      // ============================================
+      const Storage = {
+        _cache: new Map(),
+
+        save(key, data) {
+          try {
+            const json = JSON.stringify(data);
+            localStorage.setItem(key, json);
+            this._cache.set(key, data);
+            return true;
+          } catch (err) {
+            if (err.name === 'QuotaExceededError') {
+              this.cleanup();
+              try {
+                localStorage.setItem(key, JSON.stringify(data));
+                this._cache.set(key, data);
+                return true;
+              } catch (e) {
+                return false;
+              }
+            }
+            return false;
+          }
+        },
+
+        load(key, defaultValue = null) {
+          if (this._cache.has(key)) {
+            return this._cache.get(key);
+          }
+
+          try {
+            const data = localStorage.getItem(key);
+            if (data === null) return defaultValue;
+            const parsed = JSON.parse(data);
+            this._cache.set(key, parsed);
+            return parsed;
+          } catch {
+            return defaultValue;
+          }
+        },
+
+        remove(key) {
+          try {
+            localStorage.removeItem(key);
+            this._cache.delete(key);
+            return true;
+          } catch {
+            return false;
+          }
+        },
+
+        cleanup() {
+          try {
+            const logs = this.load(STORAGE_KEYS.LOGS, []);
+            if (logs.length > 50) {
+              this.save(STORAGE_KEYS.LOGS, logs.slice(-50));
+            }
+          } catch {}
+        },
+
+        exportAll() {
+          return {
+            _meta: {
+              version: VERSION,
+              app: APP_NAME,
+              exportedAt: new Date().toISOString(),
+              userAgent: navigator.userAgent
+            },
+            config: this.load(STORAGE_KEYS.CONFIG, {}),
+            theme: this.load(STORAGE_KEYS.THEME, 'dark'),
+            logs: this.load(STORAGE_KEYS.LOGS, [])
+          };
+        },
+
+        importAll(data) {
+          ErrorHandler.assert(data && typeof data === 'object', 'Formato de dados invalido');
+          
+          let imported = 0;
+          
+          if (data.config && typeof data.config === 'object') {
+            this.save(STORAGE_KEYS.CONFIG, data.config);
+            imported++;
+          }
+          
+          if (data.theme && typeof data.theme === 'string') {
+            this.save(STORAGE_KEYS.THEME, data.theme);
+            imported++;
+          }
+          
+          if (Array.isArray(data.logs)) {
+            this.save(STORAGE_KEYS.LOGS, data.logs.slice(-MAX_LOGS));
+            imported++;
+          }
+          
+          return imported;
+        }
+      };
+
+      // ============================================
+      // LOGGER
+      // ============================================
+      const Logger = {
+        logs: [],
+        logArea: null,
+        logCount: null,
+
+        init() {
+          this.logArea = document.getElementById('logArea');
+          this.logCount = document.getElementById('logCount');
+          this.logs = Storage.load(STORAGE_KEYS.LOGS, []);
+          this.render();
+          this.updateCount();
+        },
+
+        log(message, type = LOG_TYPES.INFO, details = null) {
+          const entry = {
+            id: Date.now() + Math.random().toString(36).substr(2, 5),
+            time: new Date().toLocaleTimeString('pt-BR', { 
+              hour: '2-digit', 
+              minute: '2-digit', 
+              second: '2-digit',
+              hour12: false 
+            }),
+            timestamp: Date.now(),
+            message: String(message),
+            type,
+            details: details ? String(details) : null
+          };
+          
+          this.logs.push(entry);
+          
+          if (this.logs.length > MAX_LOGS) {
+            this.logs = this.logs.slice(-MAX_LOGS);
+          }
+          
+          this.saveDebounced();
+          this.appendEntry(entry);
+          this.updateCount();
+          
+          const consoleMethod = type === LOG_TYPES.ERROR ? 'error' : 
+                               type === LOG_TYPES.WARNING ? 'warn' : 'log';
+          console[consoleMethod](`[${APP_NAME}] [${type.toUpperCase()}] ${message}`);
+        },
+
+        info(msg, details) { this.log(msg, LOG_TYPES.INFO, details); },
+        success(msg, details) { this.log(msg, LOG_TYPES.SUCCESS, details); },
+        warning(msg, details) { this.log(msg, LOG_TYPES.WARNING, details); },
+        error(msg, details) { this.log(msg, LOG_TYPES.ERROR, details); },
+        debug(msg, details) { this.log(msg, LOG_TYPES.DEBUG, details); },
+
+        render() {
+          if (!this.logArea) return;
+          
+          const fragment = document.createDocumentFragment();
+          this.logs.forEach(entry => {
+            fragment.appendChild(this.createEntryElement(entry));
+          });
+          
+          this.logArea.innerHTML = '';
+          this.logArea.appendChild(fragment);
+          this.scrollToBottom();
+        },
+
+        appendEntry(entry) {
+          if (!this.logArea) return;
+          
+          const element = this.createEntryElement(entry);
+          this.logArea.appendChild(element);
+          
+          while (this.logArea.children.length > MAX_LOGS) {
+            this.logArea.removeChild(this.logArea.firstChild);
+          }
+          
+          this.scrollToBottom();
+        },
+
+        createEntryElement(entry) {
+          const div = document.createElement('div');
+          div.className = 'log-entry';
+          div.dataset.id = entry.id;
+          
+          const typeLabel = {
+            [LOG_TYPES.INFO]: 'INFO',
+            [LOG_TYPES.SUCCESS]: 'OK',
+            [LOG_TYPES.WARNING]: 'WARN',
+            [LOG_TYPES.ERROR]: 'ERR',
+            [LOG_TYPES.DEBUG]: 'DBG'
+          }[entry.type] || 'LOG';
+          
+          div.innerHTML = `
+            <span class="log-time">${entry.time}</span>
+            <span class="log-type ${entry.type}">${typeLabel}</span>
+            <span class="log-msg ${entry.type}">${this.escapeHtml(entry.message)}</span>
+          `;
+          
+          return div;
+        },
+
+        escapeHtml(text) {
+          const div = document.createElement('div');
+          div.textContent = text;
+          return div.innerHTML;
+        },
+
+        scrollToBottom() {
+          if (this.logArea) {
+            requestAnimationFrame(() => {
+              this.logArea.scrollTop = this.logArea.scrollHeight;
+            });
+          }
+        },
+
+        updateCount() {
+          if (this.logCount) {
+            this.logCount.textContent = this.logs.length;
+          }
+        },
+
+        clear() {
+          this.logs = [];
+          Storage.save(STORAGE_KEYS.LOGS, []);
+          if (this.logArea) {
+            this.logArea.innerHTML = '';
+          }
+          this.updateCount();
+          this.info('Log limpo');
+        },
+
+        _saveTimeout: null,
+        saveDebounced() {
+          if (this._saveTimeout) {
+            clearTimeout(this._saveTimeout);
+          }
+          this._saveTimeout = setTimeout(() => {
+            Storage.save(STORAGE_KEYS.LOGS, this.logs);
+          }, 1000);
+        }
+      };
+
+      // ============================================
+      // UI MANAGER
+      // ============================================
+      const UI = {
+        elements: {},
+        toastTimeout: null,
+
+        init() {
+          this.cacheElements();
+          this.bindEvents();
+          this.loadTheme();
+          this.loadConfig();
+          this.loadCreditsState();
+        },
+
+        cacheElements() {
+          const ids = [
+            'wss', 'user', 'domain', 'pass',
+            'btnRegister', 'btnRegisterText', 'btnCall', 'btnHangup', 'btnClear',
+            'btnAnswer', 'btnReject', 'btnClearLog', 'btnExport', 'btnImport',
+            'fileImport', 'statusDot', 'statusText', 'statusUser',
+            'dialerNumber', 'dialerStatus', 'callTimer', 'voiceAnimation',
+            'logArea', 'logCount', 'incomingModal', 'callerNumber', 'remoteAudio', 'toast',
+            'creditsPopup', 'closeCreditsBtn'
+          ];
+          
+          ids.forEach(id => {
+            this.elements[id] = document.getElementById(id);
+          });
+        },
+
+        bindEvents() {
+          // Theme buttons
+          const themeSwitcher = document.querySelector('.theme-switcher');
+          if (themeSwitcher) {
+            themeSwitcher.addEventListener('click', (e) => {
+              const btn = e.target.closest('.theme-btn');
+              if (btn) this.setTheme(btn.dataset.theme);
+            });
+          }
+
+          // Tabs
+          const tabs = document.querySelector('.tabs');
+          if (tabs) {
+            tabs.addEventListener('click', (e) => {
+              const tab = e.target.closest('.tab');
+              if (tab) this.switchTab(tab.dataset.tab);
+            });
+          }
+
+          // Keypad
+          const keypad = document.querySelector('.keypad');
+          if (keypad) {
+            keypad.addEventListener('click', (e) => {
+              const key = e.target.closest('.key');
+              if (key) Phone.pressKey(key.dataset.key);
+            });
+          }
+
+          // Call controls
+          this.elements.btnCall?.addEventListener('click', () => Phone.call());
+          this.elements.btnHangup?.addEventListener('click', () => Phone.hangup());
+          this.elements.btnClear?.addEventListener('click', () => Phone.clearDisplay());
+
+          // Registration
+          this.elements.btnRegister?.addEventListener('click', () => Phone.register());
+
+          // Incoming call
+          this.elements.btnAnswer?.addEventListener('click', () => Phone.answerCall());
+          this.elements.btnReject?.addEventListener('click', () => Phone.rejectCall());
+
+          // Log
+          this.elements.btnClearLog?.addEventListener('click', () => Logger.clear());
+
+          // Export/Import
+          this.elements.btnExport?.addEventListener('click', () => this.exportData());
+          this.elements.btnImport?.addEventListener('click', () => this.elements.fileImport?.click());
+          this.elements.fileImport?.addEventListener('change', (e) => this.importData(e));
+
+          // Keyboard
+          document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+
+          // Save config on input change
+          let saveTimeout;
+          ['wss', 'user', 'domain', 'pass'].forEach(id => {
+            this.elements[id]?.addEventListener('input', () => {
+              clearTimeout(saveTimeout);
+              saveTimeout = setTimeout(() => this.saveConfig(), SAVE_DEBOUNCE_MS);
+            });
+          });
+
+          // Credits popup
+          this.elements.closeCreditsBtn?.addEventListener('click', () => this.hideCreditsPopup());
+
+          // Network events
+          window.addEventListener('online', () => {
+            Logger.success('Conexao de rede restaurada');
+            this.showToast('Conexao restaurada', 'success');
+          });
+
+          window.addEventListener('offline', () => {
+            Logger.error('Conexao de rede perdida');
+            this.showToast('Sem conexao de rede', 'error');
+          });
+
+          // Page visibility
+          document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+              Logger.debug('Pagina em background');
+            } else {
+              Logger.debug('Pagina ativa');
+            }
+          });
+        },
+
+        setTheme(theme) {
+          if (!theme) return;
+          
+          document.documentElement.setAttribute('data-theme', theme);
+          
+          document.querySelectorAll('.theme-btn').forEach(btn => {
+            const isActive = btn.dataset.theme === theme;
+            btn.classList.toggle('active', isActive);
+            btn.setAttribute('aria-pressed', isActive);
+          });
+          
+          Storage.save(STORAGE_KEYS.THEME, theme);
+          Logger.debug(`Tema alterado para: ${theme}`);
+        },
+
+        loadTheme() {
+          const theme = Storage.load(STORAGE_KEYS.THEME, 'dark');
+          this.setTheme(theme);
+        },
+
+        switchTab(tabName) {
+          if (!tabName) return;
+          
+          document.querySelectorAll('.tab').forEach(t => {
+            const isActive = t.dataset.tab === tabName;
+            t.classList.toggle('active', isActive);
+            t.setAttribute('aria-selected', isActive);
+          });
+          
+          document.querySelectorAll('.panel').forEach(p => {
+            p.classList.toggle('active', p.id === `panel-${tabName}`);
+          });
+        },
+
+        loadConfig() {
+          const config = Storage.load(STORAGE_KEYS.CONFIG, {});
+          
+          if (config.wss && this.elements.wss) this.elements.wss.value = config.wss;
+          if (config.user && this.elements.user) this.elements.user.value = config.user;
+          if (config.domain && this.elements.domain) this.elements.domain.value = config.domain;
+          if (config.pass && this.elements.pass) this.elements.pass.value = config.pass;
+        },
+
+        saveConfig() {
+          const config = {
+            wss: this.elements.wss?.value?.trim() || '',
+            user: this.elements.user?.value?.trim() || '',
+            domain: this.elements.domain?.value?.trim() || '',
+            pass: this.elements.pass?.value || ''
+          };
+          
+          Storage.save(STORAGE_KEYS.CONFIG, config);
+          Logger.debug('Configuracao salva');
+        },
+
+        getConfig() {
+          return {
+            wss: this.elements.wss?.value?.trim() || '',
+            user: this.elements.user?.value?.trim() || '',
+            domain: this.elements.domain?.value?.trim() || '',
+            pass: this.elements.pass?.value || ''
+          };
+        },
+
+        exportData: ErrorHandler.wrap(function() {
+          const data = Storage.exportAll();
+          const json = JSON.stringify(data, null, 2);
+          const blob = new Blob([json], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `softphone_wss_backup_${new Date().toISOString().slice(0, 10)}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          
+          URL.revokeObjectURL(url);
+          
+          Logger.success('Backup exportado com sucesso');
+          UI.showToast('Dados exportados', 'success');
+        }, 'Exportar'),
+
+        importData: ErrorHandler.wrap(function(event) {
+          const file = event.target?.files?.[0];
+          if (!file) return;
+
+          if (!file.name.endsWith('.json')) {
+            Logger.error('Arquivo deve ser .json');
+            UI.showToast('Selecione um arquivo .json', 'error');
+            return;
+          }
+
+          if (file.size > 1024 * 1024) {
+            Logger.error('Arquivo muito grande (max 1MB)');
+            UI.showToast('Arquivo muito grande', 'error');
+            return;
+          }
+
+          Logger.info(`Importando: ${file.name}`);
+
+          const reader = new FileReader();
+          
+          reader.onload = (e) => {
+            try {
+              const data = JSON.parse(e.target.result);
+              const count = Storage.importAll(data);
+              UI.loadConfig();
+              UI.loadTheme();
+              Logger.logs = Storage.load(STORAGE_KEYS.LOGS, []);
+              Logger.render();
+              Logger.updateCount();
+              Logger.success(`Importados ${count} itens`);
+              UI.showToast('Dados importados', 'success');
+            } catch (err) {
+              Logger.error('Erro ao processar JSON: ' + err.message);
+              UI.showToast('Arquivo JSON invalido', 'error');
+            }
+          };
+          
+          reader.onerror = () => {
+            Logger.error('Erro ao ler arquivo');
+            UI.showToast('Erro ao ler arquivo', 'error');
+          };
+          
+          reader.readAsText(file);
+          event.target.value = '';
+        }, 'Importar'),
+
+        handleKeyboard(e) {
+          // Ignore if typing in input
+          if (e.target.tagName === 'INPUT') {
+            if (e.key === 'Enter' && e.target.id === 'pass') {
+              Phone.register();
+            }
+            return;
+          }
+
+          // Number keys
+          if (/^[0-9*#]$/.test(e.key)) {
+            e.preventDefault();
+            Phone.pressKey(e.key);
+          }
+
+          // Enter to call
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            if (Phone.isRegistered && !Phone.session) {
+              Phone.call();
+            }
+          }
+
+          // Escape to hangup
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            Phone.hangup();
+          }
+
+          // Backspace to delete
+          if (e.key === 'Backspace') {
+            e.preventDefault();
+            Phone.backspace();
+          }
+        },
+
+        updateStatus(status, text) {
+          const dot = this.elements.statusDot;
+          const label = this.elements.statusText;
+          
+          if (dot) {
+            dot.classList.remove('online', 'connecting');
+            if (status === 'online') dot.classList.add('online');
+            if (status === 'connecting') dot.classList.add('connecting');
+          }
+          
+          if (label) label.textContent = text || '';
+        },
+
+        updateStatusUser(user) {
+          if (this.elements.statusUser) {
+            this.elements.statusUser.textContent = user || '-';
+          }
+        },
+
+        updateButtons(registered, inCall) {
+          if (this.elements.btnCall) {
+            this.elements.btnCall.disabled = !registered || inCall;
+          }
+          if (this.elements.btnHangup) {
+            this.elements.btnHangup.disabled = !inCall;
+          }
+          if (this.elements.btnRegister) {
+            const txt = this.elements.btnRegisterText;
+            if (txt) txt.textContent = registered ? 'Desconectar' : 'Conectar';
+          }
+        },
+
+        setDialerNumber(number) {
+          if (this.elements.dialerNumber) {
+            this.elements.dialerNumber.textContent = number || '\u00A0';
+          }
+          
+          if (this.elements.btnCall) {
+            this.elements.btnCall.disabled = !Phone.isRegistered || !number || Phone.session;
+          }
+        },
+
+        getDialerNumber() {
+          const el = this.elements.dialerNumber;
+          if (!el) return '';
+          const text = el.textContent || '';
+          return text === '\u00A0' ? '' : text.trim();
+        },
+
+        setDialerStatus(text) {
+          if (this.elements.dialerStatus) {
+            this.elements.dialerStatus.textContent = text || '';
+          }
+        },
+
+        showCallTimer(show) {
+          if (this.elements.callTimer) {
+            this.elements.callTimer.classList.toggle('active', show);
+          }
+        },
+
+        setCallTimer(time) {
+          if (this.elements.callTimer) {
+            this.elements.callTimer.textContent = time || '00:00';
+          }
+        },
+
+        showVoiceAnimation(show) {
+          if (this.elements.voiceAnimation) {
+            this.elements.voiceAnimation.classList.toggle('active', show);
+          }
+        },
+
+        showIncomingModal(show, caller) {
+          if (this.elements.incomingModal) {
+            this.elements.incomingModal.classList.toggle('active', show);
+          }
+          if (this.elements.callerNumber && caller !== undefined) {
+            this.elements.callerNumber.textContent = caller || 'Desconhecido';
+          }
+        },
+
+        showToast(message, type = 'info') {
+          const toast = this.elements.toast;
+          if (!toast) return;
+
+          if (this.toastTimeout) {
+            clearTimeout(this.toastTimeout);
+            toast.classList.remove('show');
+          }
+
+          toast.textContent = message || '';
+          toast.className = `toast ${type}`;
+          
+          toast.offsetHeight;
+          toast.classList.add('show');
+
+          this.toastTimeout = setTimeout(() => {
+            toast.classList.remove('show');
+          }, TOAST_DURATION);
+        },
+
+        getRemoteAudio() {
+          return this.elements.remoteAudio;
+        },
+
+        loadCreditsState() {
+          const closed = Storage.load(STORAGE_KEYS.CREDITS_CLOSED, false);
+          if (closed && this.elements.creditsPopup) {
+            this.elements.creditsPopup.classList.add('hidden');
+          }
+        },
+
+        hideCreditsPopup() {
+          if (this.elements.creditsPopup) {
+            this.elements.creditsPopup.classList.add('hidden');
+            Storage.save(STORAGE_KEYS.CREDITS_CLOSED, true);
+          }
+        },
+
+        setInputError(id, hasError) {
+          const input = this.elements[id];
+          if (input) {
+            input.classList.toggle('error', hasError);
+          }
+        },
+
+        clearInputErrors() {
+          ['wss', 'user', 'domain', 'pass'].forEach(id => {
+            this.setInputError(id, false);
+          });
+        }
+      };
+
+      // ============================================
+      // PHONE MANAGER - Logica SIP corrigida igual ao original
+      // ============================================
+      const Phone = {
+        ua: null,
+        session: null,
+        callTimer: null,
+        callSeconds: 0,
+        isRegistered: false,
+        isConnecting: false,
+        reconnectAttempts: 0,
+        maxReconnectAttempts: 3,
+
+        validateConfig(config) {
+          const errors = [];
+          
+          UI.clearInputErrors();
+
+          if (!config.wss) {
+            errors.push({ field: 'wss', message: 'Servidor WSS obrigatorio' });
+          } else if (!/^wss?:\/\/.+/.test(config.wss)) {
+            errors.push({ field: 'wss', message: 'Servidor deve comecar com wss://' });
+          }
+
+          if (!config.user) {
+            errors.push({ field: 'user', message: 'Usuario obrigatorio' });
+          }
+
+          if (!config.domain) {
+            errors.push({ field: 'domain', message: 'Dominio obrigatorio' });
+          }
+
+          if (!config.pass) {
+            errors.push({ field: 'pass', message: 'Senha obrigatoria' });
+          }
+
+          errors.forEach(err => {
+            UI.setInputError(err.field, true);
+          });
+
+          return errors;
+        },
+
+        register() {
+          // Se ja esta registrado, desconectar
+          if (this.isRegistered) {
+            this.disconnect();
+            return;
+          }
+
+          if (this.isConnecting) {
+            Logger.warning('Conexao ja em andamento');
+            return;
+          }
+
+          const config = UI.getConfig();
+          const errors = this.validateConfig(config);
+
+          if (errors.length > 0) {
+            errors.forEach(err => Logger.error(err.message));
+            UI.showToast(errors[0].message, 'error');
+            return;
+          }
+
+          if (!navigator.onLine) {
+            Logger.error('Sem conexao de rede');
+            UI.showToast('Sem conexao de rede', 'error');
+            return;
+          }
+
+          // Verificar JsSIP
+          if (!checkJsSIP()) {
+            Logger.error(`[${ERROR_CODES.JSSIP_NOT_LOADED}] Biblioteca JsSIP nao carregada`);
+            UI.updateStatus('offline', 'Erro');
+            UI.showToast('Erro: JsSIP nao disponivel', 'error');
+            return;
+          }
+
+          this.isConnecting = true;
+          
+          Logger.info('Iniciando registro...');
+          Logger.debug(`Servidor: ${config.wss}`);
+          Logger.debug(`Usuario: ${config.user}@${config.domain}`);
+          Logger.debug(`JsSIP: ${jsSIPVersion}`);
+          
+          UI.updateStatus('connecting', 'Conectando...');
+          UI.saveConfig();
+
+          try {
+            const socket = new JsSIP.WebSocketInterface(config.wss);
+
+            const configuration = {
+              sockets: [socket],
+              uri: `sip:${config.user}@${config.domain}`,
+              password: config.pass,
+              register: true,
+              session_timers: false  // IMPORTANTE - igual ao original
+            };
+
+            this.ua = new JsSIP.UA(configuration);
+
+            this.ua.on('newRTCSession', (data) => {
+              const session = data.session;
+
+              // Remover headers do INVITE igual ao original
+              session.on('sending', (e) => {
+                const req = e.request;
+
+                // Remove Session-Expires
+                if (req.headers['Session-Expires']) {
+                  delete req.headers['Session-Expires'];
+                }
+
+                // Remove Min-SE
+                if (req.headers['Min-SE']) {
+                  delete req.headers['Min-SE'];
+                }
+
+                // Remove 'timer' do Supported
+                if (req.headers['Supported']) {
+                  req.headers['Supported'][0] = req.headers['Supported'][0]
+                    .replace('timer', '')
+                    .replace(',,', ',')
+                    .replace(/,$/, '');
+                }
+
+                Logger.debug('Headers Session-Expires/Min-SE/timer removidos do INVITE');
+              });
+
+              // Tratar chamada recebida
+              if (data.originator === 'remote') {
+                this.handleIncomingCall(session);
+              }
+            });
+
+            // Eventos de registro
+            this.ua.on('connected', () => {
+              Logger.success('WebSocket conectado');
+            });
+
+            this.ua.on('registered', () => {
+              this.isConnecting = false;
+              this.isRegistered = true;
+              
+              Logger.success('Registrado com sucesso!');
+              
+              UI.updateStatus('online', 'Conectado');
+              UI.updateStatusUser(config.user);
+              UI.updateButtons(true, false);
+              UI.showToast('Conectado', 'success');
+            });
+
+            this.ua.on('registrationFailed', (e) => {
+              this.isConnecting = false;
+              this.isRegistered = false;
+              
+              const cause = e?.cause || 'Erro desconhecido';
+              Logger.error(`Falha no registro: ${cause}`);
+              
+              UI.updateStatus('offline', 'Falha');
+              UI.updateButtons(false, false);
+              UI.showToast(`Falha: ${ErrorHandler.getSIPErrorMessage(cause)}`, 'error');
+            });
+
+            this.ua.on('unregistered', () => {
+              this.isConnecting = false;
+              this.isRegistered = false;
+              
+              Logger.info('Desregistrado');
+              
+              UI.updateStatus('offline', 'Desconectado');
+              UI.updateStatusUser('-');
+              UI.updateButtons(false, false);
+            });
+
+            this.ua.on('disconnected', () => {
+              this.isConnecting = false;
+              this.isRegistered = false;
+              
+              Logger.warning('Desconectado do servidor');
+              
+              UI.updateStatus('offline', 'Desconectado');
+              UI.updateButtons(false, false);
+            });
+
+            // Habilitar debug do JsSIP
+            JsSIP.debug.enable('JsSIP:*');
+            
+            // Iniciar UA
+            this.ua.start();
+            
+            Logger.info('User Agent iniciado');
+
+          } catch (error) {
+            this.isConnecting = false;
+            Logger.error(`Erro ao criar conexao: ${error.message}`);
+            UI.updateStatus('offline', 'Erro');
+            UI.showToast('Erro de conexao', 'error');
+          }
+        },
+
+        handleIncomingCall(session) {
+          if (this.session) {
+            Logger.warning('Rejeitando chamada - ja existe chamada ativa');
+            session.terminate({ status_code: 486, reason_phrase: 'Busy Here' });
+            return;
+          }
+
+          this.session = session;
+          const caller = session.remote_identity?.uri?.user || 'Desconhecido';
+          
+          Logger.success(`Chamada recebida de: ${caller}`);
+          
+          UI.showIncomingModal(true, caller);
+          UI.setDialerNumber(caller);
+          this.setupSessionEvents(session);
+          UI.updateButtons(true, true);
+        },
+
+        setupSessionEvents(session) {
+          if (!session) return;
+
+          session.on('progress', () => {
+            Logger.info('Chamando...');
+            UI.setDialerStatus('Chamando...');
+          });
+
+          session.on('accepted', () => {
+            Logger.success('Chamada aceita');
+          });
+
+          session.on('confirmed', () => {
+            Logger.success('Chamada atendida!');
+            UI.setDialerStatus('Em chamada');
+            UI.showVoiceAnimation(true);
+            this.startCallTimer();
+          });
+
+          session.on('ended', () => {
+            Logger.info('Chamada encerrada');
+            this.endCall('Encerrada');
+          });
+
+          session.on('failed', (e) => {
+            const cause = e?.cause || 'Erro';
+            Logger.error(`Falha: ${cause}`);
+            this.endCall('Falha');
+            UI.showToast(ErrorHandler.getSIPErrorMessage(cause), 'error');
+          });
+
+          // Conexao de audio
+          session.on('peerconnection', (e) => {
+            if (e?.peerconnection) {
+              e.peerconnection.addEventListener('track', (event) => {
+                const audio = UI.getRemoteAudio();
+                if (audio && event.streams?.[0]) {
+                  audio.srcObject = event.streams[0];
+                  Logger.success('Audio conectado');
+                }
+              });
+            }
+          });
+
+          // Fallback para conexao
+          if (session.connection) {
+            session.connection.addEventListener('track', (event) => {
+              const audio = UI.getRemoteAudio();
+              if (audio && event.streams?.[0]) {
+                audio.srcObject = event.streams[0];
+              }
+            });
+          }
+        },
+
+        call() {
+          if (!this.ua) {
+            Logger.error('Registre primeiro!');
+            UI.showToast('Conecte-se primeiro', 'error');
+            return;
+          }
+          
+          if (!this.isRegistered) {
+            Logger.warning('Conecte-se primeiro');
+            UI.showToast('Conecte-se primeiro', 'error');
+            return;
+          }
+
+          if (this.session) {
+            Logger.warning('Ja existe uma chamada ativa');
+            return;
+          }
+
+          const number = UI.getDialerNumber();
+          if (!number) {
+            Logger.warning('Digite um numero para ligar');
+            UI.showToast('Digite um numero', 'error');
+            return;
+          }
+
+          Logger.info(`Discando para ${number}...`);
+          UI.setDialerStatus('Iniciando...');
+
+          const config = UI.getConfig();
+          
+          try {
+            this.session = this.ua.call(
+              `sip:${number}@${config.domain}`,
+              {
+                sessionTimers: false,  // IMPORTANTE
+                mediaConstraints: { audio: true, video: false }
+              }
+            );
+
+            this.setupSessionEvents(this.session);
+            UI.updateButtons(true, true);
+            
+          } catch (error) {
+            Logger.error(`Erro ao iniciar chamada: ${error.message}`);
+            UI.showToast('Erro ao ligar', 'error');
+            this.session = null;
+          }
+        },
+
+        hangup() {
+          if (this.session) {
+            Logger.info('Enviando BYE...');
+            try {
+              this.session.terminate();
+            } catch (err) {
+              Logger.debug(`Erro ao terminar: ${err.message}`);
+            }
+          } else if (UI.elements.incomingModal?.classList.contains('active')) {
+            this.rejectCall();
+          } else {
+            Logger.debug('Nenhuma chamada ativa.');
+          }
+        },
+
+        answerCall() {
+          if (!this.session) {
+            Logger.warning('Nenhuma chamada para atender');
+            return;
+          }
+
+          Logger.info('Atendendo chamada...');
+          
+          try {
+            this.session.answer({
+              mediaConstraints: { audio: true, video: false }
+            });
+            
+            UI.showIncomingModal(false);
+            
+          } catch (error) {
+            Logger.error(`Erro ao atender: ${error.message}`);
+            UI.showToast('Erro ao atender', 'error');
+          }
+        },
+
+        rejectCall() {
+          if (!this.session) {
+            UI.showIncomingModal(false);
+            return;
+          }
+
+          Logger.info('Rejeitando chamada...');
+          
+          try {
+            this.session.terminate({ 
+              status_code: 486, 
+              reason_phrase: 'Busy Here' 
+            });
+          } catch {}
+          
+          UI.showIncomingModal(false);
+          this.session = null;
+          UI.updateButtons(this.isRegistered, false);
+        },
+
+        endCall(statusText) {
+          UI.setDialerStatus(statusText || 'Encerrada');
+          UI.showVoiceAnimation(false);
+          UI.showIncomingModal(false);
+          this.stopCallTimer();
+          
+          this.session = null;
+          UI.updateButtons(this.isRegistered, false);
+
+          setTimeout(() => {
+            UI.setDialerStatus('Digite o numero');
+          }, STATUS_RESET_DELAY);
+        },
+
+        pressKey(key) {
+          if (!key) return;
+          
+          const current = UI.getDialerNumber();
+          
+          if (current.length >= 20) return;
+          
+          UI.setDialerNumber(current + key);
+
+          // Enviar DTMF se em chamada
+          if (this.session) {
+            try {
+              if (typeof this.session.sendDTMF === 'function') {
+                this.session.sendDTMF(key);
+                Logger.debug(`DTMF: ${key}`);
+              }
+            } catch {}
+          }
+        },
+
+        backspace() {
+          const current = UI.getDialerNumber();
+          if (current.length > 0) {
+            UI.setDialerNumber(current.slice(0, -1));
+          }
+        },
+
+        clearDisplay() {
+          UI.setDialerNumber('');
+        },
+
+        startCallTimer() {
+          this.callSeconds = 0;
+          UI.showCallTimer(true);
+          UI.setCallTimer('00:00');
+
+          this.callTimer = setInterval(() => {
+            this.callSeconds++;
+            const mins = String(Math.floor(this.callSeconds / 60)).padStart(2, '0');
+            const secs = String(this.callSeconds % 60).padStart(2, '0');
+            UI.setCallTimer(`${mins}:${secs}`);
+          }, 1000);
+        },
+
+        stopCallTimer() {
+          if (this.callTimer) {
+            clearInterval(this.callTimer);
+            this.callTimer = null;
+          }
+          UI.showCallTimer(false);
+          this.callSeconds = 0;
+        },
+
+        disconnect() {
+          if (this.session) {
+            try {
+              this.session.terminate();
+            } catch {}
+            this.session = null;
+          }
+          
+          if (this.ua) {
+            try {
+              this.ua.stop();
+            } catch {}
+            this.ua = null;
+          }
+          
+          this.isRegistered = false;
+          this.isConnecting = false;
+          
+          Logger.info('Desconectado');
+          UI.updateStatus('offline', 'Desconectado');
+          UI.updateStatusUser('-');
+          UI.updateButtons(false, false);
+        }
+      };
+
+      // ============================================
+      // INITIALIZATION
+      // ============================================
+      function init() {
+        try {
+          const startTime = performance.now();
+          
+          UI.init();
+          Logger.init();
+          
+          const loadTime = (performance.now() - startTime).toFixed(0);
+          
+          Logger.success(`${APP_NAME} v${VERSION} iniciado`);
+          Logger.info(`Tempo de carga: ${loadTime}ms`);
+          
+          // Verificar JsSIP
+          if (checkJsSIP()) {
+            Logger.success(`JsSIP ${jsSIPVersion} carregado`);
+          } else {
+            Logger.error(`[${ERROR_CODES.JSSIP_NOT_LOADED}] JsSIP nao carregado`);
+          }
+          
+          Logger.info('Configure o servidor WSS e clique em Conectar');
+          
+          // Info do sistema
+          Logger.debug(`Navigator: ${navigator.userAgent.split(' ').slice(-2).join(' ')}`);
+          Logger.debug(`Online: ${navigator.onLine ? 'Sim' : 'Nao'}`);
+          
+          // Verificar WebRTC
+          if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            Logger.warning('WebRTC pode nao ser suportado');
+          }
+          
+        } catch (error) {
+          console.error(`[${APP_NAME}] Erro ao inicializar:`, error);
+        }
       }
 
-      // remove "timer" de Supported
-      if (req.headers["Supported"]) {
-        req.headers["Supported"][0] = req.headers["Supported"][0]
-          .replace("timer", "")
-          .replace(",,", ",")
-          .replace(/,$/, "");
-      }
-
-      log("🚫 Removendo Session-Expires, Min-SE e timer do INVITE");
-    });
-  });
-
-  ua.on("registered", () => log("📞 Registrado com sucesso!"));
-  ua.on("registrationFailed", (e) => log("❌ Falha no registro: " + e.cause));
-
-  JsSIP.debug.enable('JsSIP:*');
-  ua.start();
-}
-
-
-    function ligar() {
-  if (!ua) return alert("Registre primeiro!");
-
-  const destino = document.getElementById("destino").value;
-
-  log(`Discando para ${destino}...`);
-
-  chamada = ua.call(
-    `sip:${destino}@${document.getElementById("domain").value}`,
-    {
-      sessionTimers: false,
-      mediaConstraints: { audio: true, video: false }
-    }
-  );
-
-  chamada.on("progress", () => log("🔄 Chamando..."));
-  chamada.on("confirmed", () => log("☎ Chamada atendida!"));
-  chamada.on("ended", () => log("📴 Chamada encerrada"));
-  chamada.on("failed", (e) => log("❌ Falha: " + e.cause));
-}
-
-    function desligar() {
-      if (chamada) {
-        chamada.terminate();
-        log("🔚 Enviando BYE...");
+      // Inicializar quando DOM estiver pronto
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
       } else {
-        log("Nenhuma chamada ativa.");
+        init();
       }
-    }
 
-    ua.on("newRTCSession", function (data) {
-  const session = data.session;
+      // Error handlers globais
+      window.addEventListener('error', (e) => {
+        console.error(`[${APP_NAME}] Erro:`, e.error);
+      });
 
-  session.on("sending", function (e) {
-    // Intercepta o INVITE antes do envio
-    const req = e.request;
+      window.addEventListener('unhandledrejection', (e) => {
+        console.error(`[${APP_NAME}] Promise rejeitada:`, e.reason);
+      });
 
-    // Remove Session-Expires
-    if (req.headers["Session-Expires"]) {
-      delete req.headers["Session-Expires"];
-    }
-
-    // Remove Min-SE
-    if (req.headers["Min-SE"]) {
-      delete req.headers["Min-SE"];
-    }
-
-    // Remove 'timer' do Supported
-    if (req.headers["Supported"]) {
-      req.headers["Supported"][0] = req.headers["Supported"][0]
-        .replace("timer", "")
-        .replace(",,", ",")
-        .replace(/,$/, "");
-    }
-
-    log("🚫 Removendo Session-Expires, Min-SE e timer do INVITE");
-  });
-});
-
+    })();
   </script>
 </body>
 </html>
