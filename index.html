@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <!-- Nome do projeto atualizado -->
   <meta name="description" content="Softphone WSS - Sistema de telefonia VoIP WebSocket">
   <title>Softphone WSS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -121,7 +120,7 @@
     }
 
     .app {
-      max-width: 400px;
+      max-width: 420px;
       margin: 0 auto;
       padding: 12px;
       min-height: 100vh;
@@ -173,7 +172,6 @@
       letter-spacing: -0.3px;
     }
 
-    /* Badge WSS adicionado */
     .logo-badge {
       font-size: 9px;
       font-weight: 600;
@@ -328,7 +326,7 @@
       font-weight: 500;
     }
 
-    /* Tabs */
+    /* Tabs com mais abas */
     .tabs {
       display: flex;
       gap: 2px;
@@ -338,20 +336,23 @@
       margin-bottom: 12px;
       border: 1px solid var(--border);
       flex-shrink: 0;
+      overflow-x: auto;
     }
 
     .tab {
       flex: 1;
-      padding: 10px 8px;
+      padding: 10px 4px;
       border: none;
       border-radius: var(--radius-sm);
       background: transparent;
       color: var(--text-muted);
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 600;
       cursor: pointer;
       transition: all var(--transition-fast);
       position: relative;
+      white-space: nowrap;
+      min-width: 0;
     }
 
     .tab::after {
@@ -378,7 +379,7 @@
     }
 
     .tab.active::after {
-      width: 20px;
+      width: 16px;
     }
 
     /* Panels */
@@ -544,6 +545,11 @@
       border-color: var(--text-muted);
     }
 
+    .btn-sm {
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+
     .btn:disabled {
       opacity: 0.4;
       cursor: not-allowed;
@@ -602,7 +608,7 @@
       display: block;
     }
 
-    /* Voice Animation - Melhorada */
+    /* Voice Animation */
     .voice-animation {
       position: absolute;
       right: 20px;
@@ -639,6 +645,47 @@
     @keyframes voice3 { 0%, 100% { height: 6px; } 50% { height: 24px; } }
     @keyframes voice4 { 0%, 100% { height: 10px; } 50% { height: 30px; } }
     @keyframes voice5 { 0%, 100% { height: 8px; } 50% { height: 20px; } }
+
+    /* Network Stats no Dialer */
+    .network-stats {
+      display: none;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .network-stats.active {
+      display: block;
+    }
+
+    .network-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .network-stat {
+      text-align: center;
+    }
+
+    .network-stat-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .network-stat-value.good { color: var(--success); }
+    .network-stat-value.medium { color: var(--warning); }
+    .network-stat-value.bad { color: var(--danger); }
+
+    .network-stat-label {
+      font-size: 9px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 2px;
+    }
 
     /* Keypad */
     .keypad {
@@ -762,13 +809,368 @@
       fill: var(--text-secondary);
     }
 
-    .btn:disabled {
-      opacity: 0.35;
-      cursor: not-allowed;
-      transform: none !important;
+    /* Contatos Panel Styles */
+    .contacts-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
     }
 
-    /* Log Panel - Melhorado */
+    .contacts-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .contacts-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .contacts-count {
+      font-size: 10px;
+      color: var(--text-muted);
+      background: var(--bg-tertiary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 8px;
+    }
+
+    .contacts-search {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .contacts-search-input {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-family: inherit;
+    }
+
+    .contacts-search-input:focus {
+      outline: none;
+      border-color: var(--border-focus);
+    }
+
+    .contacts-search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .contacts-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 12px;
+      min-height: 0;
+    }
+
+    .contacts-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .contacts-empty-icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+
+    .contacts-empty-icon svg {
+      width: 100%;
+      height: 100%;
+      fill: var(--text-muted);
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: var(--bg-tertiary);
+      border-radius: var(--radius);
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .contact-item:hover {
+      background: var(--bg-hover);
+      border-color: var(--text-muted);
+    }
+
+    .contact-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .contact-avatar {
+      width: 40px;
+      height: 40px;
+      background: var(--accent-glow);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    .contact-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .contact-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .contact-number {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .contact-actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    .contact-action-btn {
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+    }
+
+    .contact-action-btn:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .contact-action-btn.call:hover {
+      background: var(--success-glow);
+      color: var(--success);
+    }
+
+    .contact-action-btn.favorite:hover,
+    .contact-action-btn.favorite.active {
+      background: var(--warning-glow);
+      color: var(--warning);
+    }
+
+    .contact-action-btn.delete:hover {
+      background: var(--danger-glow);
+      color: var(--danger);
+    }
+
+    .contact-action-btn svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .contacts-add-form {
+      padding: 14px;
+      border-top: 1px solid var(--border);
+      background: var(--bg-tertiary);
+    }
+
+    .contacts-add-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 8px;
+    }
+
+    .contacts-add-input {
+      padding: 10px 12px;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-family: inherit;
+    }
+
+    .contacts-add-input:focus {
+      outline: none;
+      border-color: var(--border-focus);
+    }
+
+    .contacts-add-btn {
+      padding: 10px 16px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    [data-theme="green"] .contacts-add-btn {
+      color: #000;
+    }
+
+    .contacts-add-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    /* Favoritos Panel Styles */
+    .favorites-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .favorites-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .favorites-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .favorites-count {
+      font-size: 10px;
+      color: var(--text-muted);
+      background: var(--bg-tertiary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 8px;
+    }
+
+    .favorites-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 12px;
+      min-height: 0;
+    }
+
+    .favorites-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .favorites-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .favorite-item {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      position: relative;
+    }
+
+    .favorite-item:hover {
+      background: var(--bg-hover);
+      border-color: var(--warning);
+      transform: translateY(-2px);
+    }
+
+    .favorite-item-star {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 16px;
+      height: 16px;
+      fill: var(--warning);
+    }
+
+    .favorite-item-avatar {
+      width: 48px;
+      height: 48px;
+      background: var(--warning-glow);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--warning);
+      margin: 0 auto 10px;
+    }
+
+    .favorite-item-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .favorite-item-number {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Log Panel */
     .log-container {
       background: var(--bg-secondary);
       border: 1px solid var(--border);
@@ -879,6 +1281,215 @@
     .log-msg.warning { color: var(--warning); }
     .log-msg.info { color: var(--accent); }
 
+    /* Transcript Panel Styles */
+    .transcript-container {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .transcript-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .transcript-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .transcript-count {
+      font-size: 10px;
+      color: var(--text-muted);
+      background: var(--bg-tertiary);
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 8px;
+    }
+
+    .transcript-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .transcript-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition-fast);
+    }
+
+    .transcript-btn:hover {
+      color: var(--accent);
+      background: var(--bg-hover);
+    }
+
+    .transcript-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 12px;
+      min-height: 0;
+    }
+
+    .transcript-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .transcript-empty-icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
+      opacity: 0.5;
+    }
+
+    .transcript-empty-icon svg {
+      width: 100%;
+      height: 100%;
+      fill: var(--text-muted);
+    }
+
+    .transcript-empty-text {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .transcript-empty-hint {
+      font-size: 11px;
+      margin-top: 4px;
+      opacity: 0.7;
+    }
+
+    .transcript-call {
+      background: var(--bg-tertiary);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .transcript-call-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .transcript-call-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .transcript-call-number {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .transcript-call-date {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .transcript-call-badge {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+    }
+
+    .transcript-call-badge.incoming {
+      background: var(--accent-glow);
+      color: var(--accent);
+    }
+
+    .transcript-call-badge.outgoing {
+      background: var(--success-glow);
+      color: var(--success);
+    }
+
+    .transcript-call-badge.missed {
+      background: var(--danger-glow);
+      color: var(--danger);
+    }
+
+    .transcript-call-stats {
+      display: flex;
+      gap: 16px;
+    }
+
+    .transcript-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .transcript-stat-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .transcript-stat-value {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .transcript-call-delete {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .transcript-call-delete:hover {
+      color: var(--danger);
+      background: var(--danger-glow);
+    }
+
+    .transcript-call-delete svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
     /* Export/Import Buttons */
     .data-actions {
       display: flex;
@@ -984,23 +1595,35 @@
 
     /* Scrollbar */
     .log-area::-webkit-scrollbar,
-    .config-scroll::-webkit-scrollbar {
+    .config-scroll::-webkit-scrollbar,
+    .transcript-area::-webkit-scrollbar,
+    .contacts-area::-webkit-scrollbar,
+    .favorites-area::-webkit-scrollbar {
       width: 5px;
     }
 
     .log-area::-webkit-scrollbar-track,
-    .config-scroll::-webkit-scrollbar-track {
+    .config-scroll::-webkit-scrollbar-track,
+    .transcript-area::-webkit-scrollbar-track,
+    .contacts-area::-webkit-scrollbar-track,
+    .favorites-area::-webkit-scrollbar-track {
       background: transparent;
     }
 
     .log-area::-webkit-scrollbar-thumb,
-    .config-scroll::-webkit-scrollbar-thumb {
+    .config-scroll::-webkit-scrollbar-thumb,
+    .transcript-area::-webkit-scrollbar-thumb,
+    .contacts-area::-webkit-scrollbar-thumb,
+    .favorites-area::-webkit-scrollbar-thumb {
       background: var(--border);
       border-radius: 3px;
     }
 
     .log-area::-webkit-scrollbar-thumb:hover,
-    .config-scroll::-webkit-scrollbar-thumb:hover {
+    .config-scroll::-webkit-scrollbar-thumb:hover,
+    .transcript-area::-webkit-scrollbar-thumb:hover,
+    .contacts-area::-webkit-scrollbar-thumb:hover,
+    .favorites-area::-webkit-scrollbar-thumb:hover {
       background: var(--text-muted);
     }
 
@@ -1042,7 +1665,7 @@
       border-left: 3px solid var(--warning);
     }
 
-    /* Credits Popup totalmente redesenhado */
+    /* Credits Popup */
     .credits-popup {
       position: fixed;
       bottom: 16px;
@@ -1191,6 +1814,19 @@
         right: 10px;
         bottom: 10px;
       }
+
+      .tab {
+        font-size: 10px;
+        padding: 10px 2px;
+      }
+
+      .contacts-add-row {
+        grid-template-columns: 1fr;
+      }
+
+      .favorites-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (min-height: 800px) {
@@ -1212,7 +1848,6 @@
         <div class="logo-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
         </div>
-        <!-- Nome e badge WSS -->
         <span class="logo-text">Softphone</span>
         <span class="logo-badge">WSS</span>
       </div>
@@ -1239,9 +1874,12 @@
       <span class="status-user" id="statusUser">-</span>
     </div>
 
-    <!-- Tabs -->
+    <!-- Tabs com novas abas Contatos e Favoritos -->
     <nav class="tabs" role="tablist">
       <button class="tab active" data-tab="dialer" role="tab" aria-selected="true">Discador</button>
+      <button class="tab" data-tab="contacts" role="tab" aria-selected="false">Contatos</button>
+      <button class="tab" data-tab="favorites" role="tab" aria-selected="false">Favoritos</button>
+      <button class="tab" data-tab="history" role="tab" aria-selected="false">Historico</button>
       <button class="tab" data-tab="config" role="tab" aria-selected="false">Config</button>
       <button class="tab" data-tab="log" role="tab" aria-selected="false">Log</button>
     </nav>
@@ -1256,9 +1894,27 @@
           <div class="voice-bar"></div>
           <div class="voice-bar"></div>
         </div>
-        <div class="dialer-number" id="dialerNumber" aria-live="polite">&nbsp;</div>
+        <div class="dialer-number" id="dialerNumber">&nbsp;</div>
         <div class="dialer-status" id="dialerStatus">Digite o numero</div>
         <div class="call-timer" id="callTimer" aria-live="polite">00:00</div>
+        
+        <!-- Network Stats durante chamada -->
+        <div class="network-stats" id="networkStats">
+          <div class="network-stats-grid">
+            <div class="network-stat">
+              <div class="network-stat-value" id="statLatency">--</div>
+              <div class="network-stat-label">Latencia</div>
+            </div>
+            <div class="network-stat">
+              <div class="network-stat-value" id="statJitter">--</div>
+              <div class="network-stat-label">Jitter</div>
+            </div>
+            <div class="network-stat">
+              <div class="network-stat-value" id="statPacketLoss">--</div>
+              <div class="network-stat-label">Perda</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="keypad" role="group" aria-label="Teclado numerico">
@@ -1325,6 +1981,86 @@
       </div>
     </section>
 
+    <!-- Novo painel Contatos -->
+    <section class="panel" id="panel-contacts" role="tabpanel">
+      <div class="contacts-container">
+        <div class="contacts-header">
+          <div style="display:flex;align-items:center;">
+            <span class="contacts-title">Contatos</span>
+            <span class="contacts-count" id="contactsCount">0</span>
+          </div>
+        </div>
+        <div class="contacts-search">
+          <input type="text" class="contacts-search-input" id="contactsSearch" placeholder="Buscar contato...">
+        </div>
+        <div class="contacts-area" id="contactsArea">
+          <div class="contacts-empty" id="contactsEmpty">
+            <div class="contacts-empty-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </div>
+            <div class="transcript-empty-text">Nenhum contato</div>
+            <div class="transcript-empty-hint">Adicione contatos usando o formulario abaixo</div>
+          </div>
+          <div id="contactsList"></div>
+        </div>
+        <div class="contacts-add-form">
+          <div class="contacts-add-row">
+            <input type="text" class="contacts-add-input" id="contactName" placeholder="Nome">
+            <input type="tel" class="contacts-add-input" id="contactNumber" placeholder="Numero">
+            <button class="contacts-add-btn" id="btnAddContact">Adicionar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Novo painel Favoritos -->
+    <section class="panel" id="panel-favorites" role="tabpanel">
+      <div class="favorites-container">
+        <div class="favorites-header">
+          <div style="display:flex;align-items:center;">
+            <span class="favorites-title">Favoritos</span>
+            <span class="favorites-count" id="favoritesCount">0</span>
+          </div>
+        </div>
+        <div class="favorites-area" id="favoritesArea">
+          <div class="favorites-empty" id="favoritesEmpty">
+            <div class="contacts-empty-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            </div>
+            <div class="transcript-empty-text">Nenhum favorito</div>
+            <div class="transcript-empty-hint">Marque contatos como favoritos para acesso rapido</div>
+          </div>
+          <div class="favorites-grid" id="favoritesList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Historico de Chamadas -->
+    <section class="panel" id="panel-history" role="tabpanel">
+      <div class="transcript-container">
+        <div class="transcript-header">
+          <div style="display:flex;align-items:center;">
+            <span class="transcript-title">Historico</span>
+            <span class="transcript-count" id="historyCount">0</span>
+          </div>
+          <div class="transcript-actions">
+            <button class="transcript-btn" id="btnExportHistory" type="button">Exportar</button>
+            <button class="transcript-btn" id="btnClearHistory" type="button">Limpar</button>
+          </div>
+        </div>
+        <div class="transcript-area" id="historyArea">
+          <div class="transcript-empty" id="historyEmpty">
+            <div class="transcript-empty-icon">
+              <svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+            </div>
+            <div class="transcript-empty-text">Nenhuma chamada registrada</div>
+            <div class="transcript-empty-hint">As chamadas realizadas aparecerao aqui</div>
+          </div>
+          <div id="historyList"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- Config Panel -->
     <section class="panel" id="panel-config" role="tabpanel">
       <div class="config-scroll">
@@ -1362,7 +2098,7 @@
       </div>
     </section>
 
-    <!-- Log Panel - Melhorado -->
+    <!-- Log Panel -->
     <section class="panel" id="panel-log" role="tabpanel">
       <div class="log-container">
         <div class="log-header">
@@ -1395,7 +2131,7 @@
   <!-- Toast -->
   <div class="toast" id="toast" role="alert" aria-live="assertive"></div>
 
-  <!-- Credits Popup redesenhado -->
+  <!-- Credits Popup -->
   <aside class="credits-popup" id="creditsPopup">
     <div class="credits-header">
       <span class="credits-title">Creditos</span>
@@ -1425,8 +2161,8 @@
   <script>
     /**
      * Softphone WSS - Sistema VoIP WebSocket
-     * @version 4.1
-     * @description Softphone profissional com logs detalhados e tratamento robusto de erros
+     * @version 6.0
+     * @description Softphone com Contatos, Favoritos e Estatisticas de Rede
      */
     (function() {
       'use strict';
@@ -1434,22 +2170,26 @@
       // ============================================
       // CONSTANTS
       // ============================================
-      const VERSION = '4.1';
+      const VERSION = '6.0';
       const APP_NAME = 'Softphone WSS';
       
       const STORAGE_KEYS = Object.freeze({
         CONFIG: 'softphone_wss_config',
         THEME: 'softphone_wss_theme',
         LOGS: 'softphone_wss_logs',
+        HISTORY: 'softphone_wss_history',
+        CONTACTS: 'softphone_wss_contacts',
         CREDITS_CLOSED: 'softphone_wss_credits_closed'
       });
 
       const MAX_LOGS = 300;
+      const MAX_HISTORY = 100;
+      const MAX_CONTACTS = 500;
       const TOAST_DURATION = 3500;
       const STATUS_RESET_DELAY = 2500;
       const SAVE_DEBOUNCE_MS = 500;
+      const STATS_UPDATE_INTERVAL = 1000;
 
-      // Log types for categorization
       const LOG_TYPES = Object.freeze({
         INFO: 'info',
         SUCCESS: 'success',
@@ -1458,7 +2198,6 @@
         DEBUG: 'debug'
       });
 
-      // Error codes for better debugging
       const ERROR_CODES = Object.freeze({
         JSSIP_NOT_LOADED: 'E001',
         VALIDATION: 'E002',
@@ -1467,7 +2206,28 @@
         CALL: 'E005',
         MEDIA: 'E006',
         STORAGE: 'E007',
-        NETWORK: 'E008'
+        NETWORK: 'E008',
+        WEBSOCKET: 'E009',
+        SIP: 'E010',
+        CONTACT: 'E011'
+      });
+
+      const SIP_ERRORS = Object.freeze({
+        400: 'Requisicao mal formada',
+        401: 'Nao autorizado - verifique credenciais',
+        403: 'Proibido - acesso negado',
+        404: 'Usuario nao encontrado',
+        408: 'Timeout - servidor nao respondeu',
+        480: 'Temporariamente indisponivel',
+        486: 'Ocupado',
+        487: 'Chamada cancelada',
+        488: 'Codec nao aceito',
+        500: 'Erro interno do servidor',
+        502: 'Bad Gateway',
+        503: 'Servico indisponivel',
+        504: 'Timeout do gateway',
+        600: 'Ocupado em toda parte',
+        603: 'Recusado'
       });
 
       let jsSIPLoaded = false;
@@ -1482,7 +2242,6 @@
         return false;
       }
 
-      // Verificar agora
       checkJsSIP();
 
       // ============================================
@@ -1499,56 +2258,112 @@
           };
         },
 
-        handle(error, context, code = 'E000') {
-          const message = error?.message || String(error);
-          const stack = error?.stack;
-          
-          if (typeof Logger !== 'undefined' && Logger.error) {
-            Logger.error(`[${code}] ${context}: ${message}`);
-          }
-          
-          if (stack && typeof Logger !== 'undefined' && Logger.debug) {
-            Logger.debug(`Stack: ${stack.split('\n').slice(0, 3).join(' -> ')}`);
-          }
-          
-          if (typeof UI !== 'undefined' && UI.showToast) {
-            UI.showToast(message, 'error');
-          }
-
-          console.error(`[${APP_NAME}] [${code}] ${context}:`, error);
-        },
-
-        assert(condition, message, code = ERROR_CODES.VALIDATION) {
-          if (!condition) {
-            throw new Error(`[${code}] ${message}`);
+        async wrapAsync(fn, context = 'Operacao') {
+          try {
+            return await fn();
+          } catch (error) {
+            ErrorHandler.handle(error, context);
           }
         },
 
-        getSIPErrorMessage(cause) {
-          const messages = {
-            'Rejected': 'Chamada rejeitada',
-            'Busy': 'Numero ocupado',
-            'No Answer': 'Sem resposta',
-            'Not Found': 'Numero nao encontrado',
-            'Address Incomplete': 'Numero incompleto',
-            'Authentication Error': 'Erro de autenticacao',
-            'Canceled': 'Chamada cancelada',
-            'Request Timeout': 'Tempo esgotado',
-            'Temporarily Unavailable': 'Temporariamente indisponivel',
-            'Service Unavailable': 'Servico indisponivel',
-            'Decline': 'Chamada recusada',
-            'SIP Failure Code': 'Erro no servidor SIP',
-            'Connection Error': 'Erro de conexao',
-            'User Denied Media Access': 'Acesso ao microfone negado',
-            'WebRTC Error': 'Erro WebRTC',
-            'Forbidden': 'Acesso negado (403)',
-            'Method Not Allowed': 'Metodo nao permitido',
-            'Request Terminated': 'Requisicao terminada',
-            'Dialog Terminated': 'Dialogo terminado',
-            'Transport Error': 'Erro de transporte',
-            'WebSocket Error': 'Erro WebSocket'
+        handle(error, context = 'Erro') {
+          const errorMsg = error?.message || String(error);
+          const errorCode = error?.code || 'UNKNOWN';
+          
+          console.error(`[${APP_NAME}] ${context}:`, error);
+          
+          if (typeof Softphone !== 'undefined' && Softphone.log) {
+            Softphone.log(`[${errorCode}] ${context}: ${errorMsg}`, LOG_TYPES.ERROR);
+          }
+        },
+
+        getSIPErrorMessage(code) {
+          return SIP_ERRORS[code] || `Erro SIP ${code}`;
+        }
+      };
+
+      // ============================================
+      // UTILITY FUNCTIONS
+      // ============================================
+      const Utils = {
+        $(id) {
+          return document.getElementById(id);
+        },
+
+        $$(selector) {
+          return document.querySelectorAll(selector);
+        },
+
+        debounce(fn, ms) {
+          let timer;
+          return function(...args) {
+            clearTimeout(timer);
+            timer = setTimeout(() => fn.apply(this, args), ms);
           };
-          return messages[cause] || cause || 'Erro desconhecido';
+        },
+
+        formatTime(date) {
+          return date.toLocaleTimeString('pt-BR', { 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit' 
+          });
+        },
+
+        formatDate(date) {
+          return date.toLocaleDateString('pt-BR', { 
+            day: '2-digit', 
+            month: '2-digit', 
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        },
+
+        formatDuration(seconds) {
+          if (!seconds || seconds < 0) return '00:00';
+          const mins = Math.floor(seconds / 60);
+          const secs = Math.floor(seconds % 60);
+          return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        },
+
+        generateId() {
+          return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+        },
+
+        sanitizeNumber(number) {
+          return String(number || '').replace(/[^\d*#]/g, '');
+        },
+
+        getInitials(name) {
+          if (!name) return '?';
+          const parts = name.trim().split(' ');
+          if (parts.length >= 2) {
+            return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+          }
+          return name.substring(0, 2).toUpperCase();
+        },
+
+        isValidWSS(url) {
+          if (!url) return false;
+          try {
+            const parsed = new URL(url);
+            return parsed.protocol === 'wss:' || parsed.protocol === 'ws:';
+          } catch {
+            return false;
+          }
+        },
+
+        isValidDomain(domain) {
+          if (!domain) return false;
+          const pattern = /^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$|^(\d{1,3}\.){3}\d{1,3}$/;
+          return pattern.test(domain);
+        },
+
+        escapeHtml(str) {
+          const div = document.createElement('div');
+          div.textContent = str;
+          return div.innerHTML;
         }
       };
 
@@ -1556,1181 +2371,1482 @@
       // STORAGE MANAGER
       // ============================================
       const Storage = {
-        _cache: new Map(),
-
-        save(key, data) {
+        get(key, defaultValue = null) {
           try {
-            const json = JSON.stringify(data);
-            localStorage.setItem(key, json);
-            this._cache.set(key, data);
-            return true;
-          } catch (err) {
-            if (err.name === 'QuotaExceededError') {
-              this.cleanup();
-              try {
-                localStorage.setItem(key, JSON.stringify(data));
-                this._cache.set(key, data);
-                return true;
-              } catch (e) {
-                return false;
-              }
-            }
-            return false;
+            const item = localStorage.getItem(key);
+            if (item === null) return defaultValue;
+            return JSON.parse(item);
+          } catch (error) {
+            ErrorHandler.handle(error, `Storage.get(${key})`);
+            return defaultValue;
           }
         },
 
-        load(key, defaultValue = null) {
-          if (this._cache.has(key)) {
-            return this._cache.get(key);
-          }
-
+        set(key, value) {
           try {
-            const data = localStorage.getItem(key);
-            if (data === null) return defaultValue;
-            const parsed = JSON.parse(data);
-            this._cache.set(key, parsed);
-            return parsed;
-          } catch {
-            return defaultValue;
+            localStorage.setItem(key, JSON.stringify(value));
+            return true;
+          } catch (error) {
+            if (error.name === 'QuotaExceededError') {
+              this.cleanup();
+              try {
+                localStorage.setItem(key, JSON.stringify(value));
+                return true;
+              } catch {
+                ErrorHandler.handle(error, 'Storage.set - quota exceeded');
+              }
+            }
+            ErrorHandler.handle(error, `Storage.set(${key})`);
+            return false;
           }
         },
 
         remove(key) {
           try {
             localStorage.removeItem(key);
-            this._cache.delete(key);
             return true;
-          } catch {
+          } catch (error) {
+            ErrorHandler.handle(error, `Storage.remove(${key})`);
             return false;
           }
         },
 
         cleanup() {
           try {
-            const logs = this.load(STORAGE_KEYS.LOGS, []);
+            const logs = this.get(STORAGE_KEYS.LOGS, []);
             if (logs.length > 50) {
-              this.save(STORAGE_KEYS.LOGS, logs.slice(-50));
+              this.set(STORAGE_KEYS.LOGS, logs.slice(-50));
             }
-          } catch {}
-        },
-
-        exportAll() {
-          return {
-            _meta: {
-              version: VERSION,
-              app: APP_NAME,
-              exportedAt: new Date().toISOString(),
-              userAgent: navigator.userAgent
-            },
-            config: this.load(STORAGE_KEYS.CONFIG, {}),
-            theme: this.load(STORAGE_KEYS.THEME, 'dark'),
-            logs: this.load(STORAGE_KEYS.LOGS, [])
-          };
-        },
-
-        importAll(data) {
-          ErrorHandler.assert(data && typeof data === 'object', 'Formato de dados invalido');
-          
-          let imported = 0;
-          
-          if (data.config && typeof data.config === 'object') {
-            this.save(STORAGE_KEYS.CONFIG, data.config);
-            imported++;
+            
+            const history = this.get(STORAGE_KEYS.HISTORY, []);
+            if (history.length > 20) {
+              this.set(STORAGE_KEYS.HISTORY, history.slice(-20));
+            }
+          } catch (error) {
+            ErrorHandler.handle(error, 'Storage.cleanup');
           }
-          
-          if (data.theme && typeof data.theme === 'string') {
-            this.save(STORAGE_KEYS.THEME, data.theme);
-            imported++;
-          }
-          
-          if (Array.isArray(data.logs)) {
-            this.save(STORAGE_KEYS.LOGS, data.logs.slice(-MAX_LOGS));
-            imported++;
-          }
-          
-          return imported;
         }
       };
 
       // ============================================
-      // LOGGER
+      // CONTACTS MANAGER
       // ============================================
-      const Logger = {
-        logs: [],
-        logArea: null,
-        logCount: null,
+      const ContactsManager = {
+        contacts: [],
 
         init() {
-          this.logArea = document.getElementById('logArea');
-          this.logCount = document.getElementById('logCount');
-          this.logs = Storage.load(STORAGE_KEYS.LOGS, []);
+          this.contacts = Storage.get(STORAGE_KEYS.CONTACTS, []);
+          this.render();
+          this.renderFavorites();
+          this.updateCounts();
+        },
+
+        add(name, number) {
+          if (!name || !number) {
+            Softphone.log(`[${ERROR_CODES.CONTACT}] Nome e numero sao obrigatorios`, LOG_TYPES.ERROR);
+            Softphone.toast('Preencha nome e numero', 'error');
+            return false;
+          }
+
+          const sanitizedNumber = Utils.sanitizeNumber(number);
+          if (!sanitizedNumber) {
+            Softphone.log(`[${ERROR_CODES.CONTACT}] Numero invalido`, LOG_TYPES.ERROR);
+            Softphone.toast('Numero invalido', 'error');
+            return false;
+          }
+
+          // Check duplicate
+          const exists = this.contacts.find(c => c.number === sanitizedNumber);
+          if (exists) {
+            Softphone.log(`[${ERROR_CODES.CONTACT}] Numero ja cadastrado`, LOG_TYPES.WARNING);
+            Softphone.toast('Numero ja existe', 'warning');
+            return false;
+          }
+
+          const contact = {
+            id: Utils.generateId(),
+            name: name.trim(),
+            number: sanitizedNumber,
+            favorite: false,
+            createdAt: new Date().toISOString()
+          };
+
+          this.contacts.unshift(contact);
+
+          if (this.contacts.length > MAX_CONTACTS) {
+            this.contacts = this.contacts.slice(0, MAX_CONTACTS);
+          }
+
+          this.save();
+          this.render();
+          this.updateCounts();
+
+          Softphone.log(`Contato adicionado: ${contact.name} (${contact.number})`, LOG_TYPES.SUCCESS);
+          Softphone.toast('Contato adicionado', 'success');
+          return true;
+        },
+
+        remove(id) {
+          const contact = this.contacts.find(c => c.id === id);
+          if (contact) {
+            Softphone.log(`Contato removido: ${contact.name}`, LOG_TYPES.INFO);
+          }
+          
+          this.contacts = this.contacts.filter(c => c.id !== id);
+          this.save();
+          this.render();
+          this.renderFavorites();
+          this.updateCounts();
+        },
+
+        toggleFavorite(id) {
+          const contact = this.contacts.find(c => c.id === id);
+          if (contact) {
+            contact.favorite = !contact.favorite;
+            this.save();
+            this.render();
+            this.renderFavorites();
+            this.updateCounts();
+
+            if (contact.favorite) {
+              Softphone.log(`${contact.name} adicionado aos favoritos`, LOG_TYPES.INFO);
+              Softphone.toast('Adicionado aos favoritos', 'success');
+            } else {
+              Softphone.log(`${contact.name} removido dos favoritos`, LOG_TYPES.INFO);
+            }
+          }
+        },
+
+        search(query) {
+          if (!query) {
+            this.render();
+            return;
+          }
+
+          const q = query.toLowerCase();
+          const filtered = this.contacts.filter(c => 
+            c.name.toLowerCase().includes(q) || 
+            c.number.includes(q)
+          );
+
+          this.renderList(filtered);
+        },
+
+        save() {
+          Storage.set(STORAGE_KEYS.CONTACTS, this.contacts);
+        },
+
+        updateCounts() {
+          const contactsCount = Utils.$('contactsCount');
+          const favoritesCount = Utils.$('favoritesCount');
+          
+          if (contactsCount) {
+            contactsCount.textContent = this.contacts.length;
+          }
+          
+          if (favoritesCount) {
+            favoritesCount.textContent = this.contacts.filter(c => c.favorite).length;
+          }
+        },
+
+        render() {
+          this.renderList(this.contacts);
+        },
+
+        renderList(contacts) {
+          const container = Utils.$('contactsList');
+          const emptyState = Utils.$('contactsEmpty');
+          
+          if (!container) return;
+
+          if (contacts.length === 0) {
+            container.innerHTML = '';
+            if (emptyState) emptyState.style.display = 'flex';
+            return;
+          }
+
+          if (emptyState) emptyState.style.display = 'none';
+
+          const fragment = document.createDocumentFragment();
+
+          contacts.forEach(contact => {
+            const div = document.createElement('div');
+            div.className = 'contact-item';
+            div.innerHTML = `
+              <div class="contact-avatar">${Utils.getInitials(contact.name)}</div>
+              <div class="contact-info">
+                <div class="contact-name">${Utils.escapeHtml(contact.name)}</div>
+                <div class="contact-number">${contact.number}</div>
+              </div>
+              <div class="contact-actions">
+                <button class="contact-action-btn call" data-number="${contact.number}" title="Ligar">
+                  <svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+                </button>
+                <button class="contact-action-btn favorite ${contact.favorite ? 'active' : ''}" data-id="${contact.id}" title="Favorito">
+                  <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                </button>
+                <button class="contact-action-btn delete" data-id="${contact.id}" title="Remover">
+                  <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                </button>
+              </div>
+            `;
+            fragment.appendChild(div);
+          });
+
+          container.innerHTML = '';
+          container.appendChild(fragment);
+
+          // Bind events
+          container.querySelectorAll('.contact-action-btn.call').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const number = btn.dataset.number;
+              Softphone.dialNumber(number);
+            });
+          });
+
+          container.querySelectorAll('.contact-action-btn.favorite').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              this.toggleFavorite(btn.dataset.id);
+            });
+          });
+
+          container.querySelectorAll('.contact-action-btn.delete').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              if (confirm('Remover este contato?')) {
+                this.remove(btn.dataset.id);
+              }
+            });
+          });
+
+          // Click to call
+          container.querySelectorAll('.contact-item').forEach((item, index) => {
+            item.addEventListener('click', () => {
+              const number = contacts[index].number;
+              Softphone.dialNumber(number);
+            });
+          });
+        },
+
+        renderFavorites() {
+          const container = Utils.$('favoritesList');
+          const emptyState = Utils.$('favoritesEmpty');
+          
+          if (!container) return;
+
+          const favorites = this.contacts.filter(c => c.favorite);
+
+          if (favorites.length === 0) {
+            container.innerHTML = '';
+            if (emptyState) emptyState.style.display = 'flex';
+            return;
+          }
+
+          if (emptyState) emptyState.style.display = 'none';
+
+          const fragment = document.createDocumentFragment();
+
+          favorites.forEach(contact => {
+            const div = document.createElement('div');
+            div.className = 'favorite-item';
+            div.dataset.number = contact.number;
+            div.innerHTML = `
+              <svg class="favorite-item-star" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <div class="favorite-item-avatar">${Utils.getInitials(contact.name)}</div>
+              <div class="favorite-item-name">${Utils.escapeHtml(contact.name)}</div>
+              <div class="favorite-item-number">${contact.number}</div>
+            `;
+            fragment.appendChild(div);
+          });
+
+          container.innerHTML = '';
+          container.appendChild(fragment);
+
+          // Click to call
+          container.querySelectorAll('.favorite-item').forEach(item => {
+            item.addEventListener('click', () => {
+              const number = item.dataset.number;
+              Softphone.dialNumber(number);
+            });
+          });
+        }
+      };
+
+      // ============================================
+      // NETWORK STATS MANAGER
+      // ============================================
+      const NetworkStats = {
+        statsInterval: null,
+        peerConnection: null,
+
+        start(pc) {
+          this.peerConnection = pc;
+          this.statsInterval = setInterval(() => this.update(), STATS_UPDATE_INTERVAL);
+          Utils.$('networkStats').classList.add('active');
+          Softphone.log('Monitoramento de rede iniciado', LOG_TYPES.DEBUG);
+        },
+
+        stop() {
+          if (this.statsInterval) {
+            clearInterval(this.statsInterval);
+            this.statsInterval = null;
+          }
+          this.peerConnection = null;
+          Utils.$('networkStats').classList.remove('active');
+          
+          // Reset values
+          Utils.$('statLatency').textContent = '--';
+          Utils.$('statLatency').className = 'network-stat-value';
+          Utils.$('statJitter').textContent = '--';
+          Utils.$('statJitter').className = 'network-stat-value';
+          Utils.$('statPacketLoss').textContent = '--';
+          Utils.$('statPacketLoss').className = 'network-stat-value';
+        },
+
+        async update() {
+          if (!this.peerConnection) return;
+
+          try {
+            const stats = await this.peerConnection.getStats();
+            let latency = null;
+            let jitter = null;
+            let packetsLost = 0;
+            let packetsReceived = 0;
+
+            stats.forEach(report => {
+              if (report.type === 'candidate-pair' && report.state === 'succeeded') {
+                latency = report.currentRoundTripTime;
+              }
+              
+              if (report.type === 'inbound-rtp' && report.kind === 'audio') {
+                jitter = report.jitter;
+                packetsLost = report.packetsLost || 0;
+                packetsReceived = report.packetsReceived || 0;
+              }
+            });
+
+            // Update UI
+            const latencyEl = Utils.$('statLatency');
+            const jitterEl = Utils.$('statJitter');
+            const packetLossEl = Utils.$('statPacketLoss');
+
+            if (latency !== null) {
+              const latencyMs = Math.round(latency * 1000);
+              latencyEl.textContent = latencyMs + 'ms';
+              latencyEl.className = 'network-stat-value ' + this.getQualityClass(latencyMs, 100, 200);
+            }
+
+            if (jitter !== null) {
+              const jitterMs = Math.round(jitter * 1000);
+              jitterEl.textContent = jitterMs + 'ms';
+              jitterEl.className = 'network-stat-value ' + this.getQualityClass(jitterMs, 30, 50);
+            }
+
+            if (packetsReceived > 0) {
+              const lossPercent = ((packetsLost / (packetsReceived + packetsLost)) * 100).toFixed(1);
+              packetLossEl.textContent = lossPercent + '%';
+              packetLossEl.className = 'network-stat-value ' + this.getQualityClass(parseFloat(lossPercent), 1, 3);
+            }
+
+          } catch (error) {
+            // Silently ignore stats errors
+          }
+        },
+
+        getQualityClass(value, goodThreshold, badThreshold) {
+          if (value <= goodThreshold) return 'good';
+          if (value <= badThreshold) return 'medium';
+          return 'bad';
+        }
+      };
+
+      // ============================================
+      // CALL HISTORY MANAGER
+      // ============================================
+      const CallHistory = {
+        calls: [],
+
+        init() {
+          this.calls = Storage.get(STORAGE_KEYS.HISTORY, []);
           this.render();
           this.updateCount();
         },
 
-        log(message, type = LOG_TYPES.INFO, details = null) {
-          const entry = {
-            id: Date.now() + Math.random().toString(36).substr(2, 5),
-            time: new Date().toLocaleTimeString('pt-BR', { 
-              hour: '2-digit', 
-              minute: '2-digit', 
-              second: '2-digit',
-              hour12: false 
-            }),
-            timestamp: Date.now(),
-            message: String(message),
-            type,
-            details: details ? String(details) : null
+        add(callData) {
+          const call = {
+            id: Utils.generateId(),
+            number: callData.number || 'Desconhecido',
+            type: callData.type || 'outgoing',
+            status: callData.status || 'completed',
+            duration: callData.duration || 0,
+            startTime: callData.startTime || new Date().toISOString(),
+            endTime: callData.endTime || new Date().toISOString()
           };
+
+          this.calls.unshift(call);
           
+          if (this.calls.length > MAX_HISTORY) {
+            this.calls = this.calls.slice(0, MAX_HISTORY);
+          }
+
+          this.save();
+          this.render();
+          this.updateCount();
+
+          Softphone.log(`Chamada registrada: ${call.number} (${call.type})`, LOG_TYPES.INFO);
+        },
+
+        remove(id) {
+          this.calls = this.calls.filter(c => c.id !== id);
+          this.save();
+          this.render();
+          this.updateCount();
+        },
+
+        clear() {
+          this.calls = [];
+          this.save();
+          this.render();
+          this.updateCount();
+          Softphone.log('Historico de chamadas limpo', LOG_TYPES.INFO);
+        },
+
+        save() {
+          Storage.set(STORAGE_KEYS.HISTORY, this.calls);
+        },
+
+        updateCount() {
+          const countEl = Utils.$('historyCount');
+          if (countEl) {
+            countEl.textContent = this.calls.length;
+          }
+        },
+
+        render() {
+          const container = Utils.$('historyList');
+          const emptyState = Utils.$('historyEmpty');
+          
+          if (!container) return;
+
+          if (this.calls.length === 0) {
+            container.innerHTML = '';
+            if (emptyState) emptyState.style.display = 'flex';
+            return;
+          }
+
+          if (emptyState) emptyState.style.display = 'none';
+
+          const fragment = document.createDocumentFragment();
+
+          this.calls.forEach(call => {
+            const div = document.createElement('div');
+            div.className = 'transcript-call';
+            div.innerHTML = `
+              <div class="transcript-call-header">
+                <div class="transcript-call-info">
+                  <span class="transcript-call-number">${Utils.escapeHtml(call.number)}</span>
+                  <span class="transcript-call-date">${Utils.formatDate(new Date(call.startTime))}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="transcript-call-badge ${call.type}">${this.getTypeLabel(call.type)}</span>
+                  <button class="transcript-call-delete" data-id="${call.id}" title="Remover">
+                    <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="transcript-call-stats">
+                <div class="transcript-stat">
+                  <span class="transcript-stat-label">Duracao</span>
+                  <span class="transcript-stat-value">${Utils.formatDuration(call.duration)}</span>
+                </div>
+                <div class="transcript-stat">
+                  <span class="transcript-stat-label">Status</span>
+                  <span class="transcript-stat-value">${this.getStatusLabel(call.status)}</span>
+                </div>
+              </div>
+            `;
+            fragment.appendChild(div);
+          });
+
+          container.innerHTML = '';
+          container.appendChild(fragment);
+
+          // Add delete handlers
+          container.querySelectorAll('.transcript-call-delete').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              this.remove(btn.dataset.id);
+            });
+          });
+
+          // Click to call
+          container.querySelectorAll('.transcript-call').forEach((item, index) => {
+            item.addEventListener('click', () => {
+              const number = this.calls[index].number;
+              Softphone.dialNumber(number);
+            });
+          });
+        },
+
+        getTypeLabel(type) {
+          const labels = {
+            incoming: 'Recebida',
+            outgoing: 'Realizada',
+            missed: 'Perdida'
+          };
+          return labels[type] || type;
+        },
+
+        getStatusLabel(status) {
+          const labels = {
+            completed: 'Completada',
+            missed: 'Perdida',
+            rejected: 'Rejeitada',
+            failed: 'Falhou'
+          };
+          return labels[status] || status;
+        },
+
+        export() {
+          const data = {
+            app: APP_NAME,
+            version: VERSION,
+            exportDate: new Date().toISOString(),
+            calls: this.calls
+          };
+
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `softphone-historico-${new Date().toISOString().slice(0, 10)}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+
+          Softphone.log('Historico exportado com sucesso', LOG_TYPES.SUCCESS);
+          Softphone.toast('Historico exportado', 'success');
+        }
+      };
+
+      // ============================================
+      // MAIN SOFTPHONE MODULE
+      // ============================================
+      const Softphone = {
+        ua: null,
+        session: null,
+        isRegistered: false,
+        isInCall: false,
+        callStartTime: null,
+        callTimerInterval: null,
+        currentCallNumber: '',
+        currentCallType: 'outgoing',
+        logs: [],
+        logCount: 0,
+        dom: {},
+
+        init: ErrorHandler.wrap(function() {
+          this.cacheDom();
+          this.loadTheme();
+          this.loadConfig();
+          this.loadLogs();
+          this.bindEvents();
+          this.checkCreditsPopup();
+          CallHistory.init();
+          ContactsManager.init();
+
+          if (checkJsSIP()) {
+            this.log(`${APP_NAME} v${VERSION} inicializado`, LOG_TYPES.SUCCESS);
+            this.log(`JsSIP v${jsSIPVersion} carregado`, LOG_TYPES.INFO);
+          } else {
+            this.log(`[${ERROR_CODES.JSSIP_NOT_LOADED}] JsSIP nao carregado - verificando...`, LOG_TYPES.WARNING);
+            setTimeout(() => {
+              if (checkJsSIP()) {
+                this.log(`JsSIP v${jsSIPVersion} carregado com sucesso`, LOG_TYPES.SUCCESS);
+              } else {
+                this.log(`[${ERROR_CODES.JSSIP_NOT_LOADED}] Falha ao carregar JsSIP`, LOG_TYPES.ERROR);
+              }
+            }, 2000);
+          }
+
+          window.addEventListener('online', () => {
+            this.log('Conexao de rede restabelecida', LOG_TYPES.SUCCESS);
+            this.toast('Conectado a internet', 'success');
+          });
+
+          window.addEventListener('offline', () => {
+            this.log(`[${ERROR_CODES.NETWORK}] Conexao de rede perdida`, LOG_TYPES.ERROR);
+            this.toast('Sem conexao com a internet', 'error');
+          });
+
+        }, 'Softphone.init'),
+
+        cacheDom() {
+          this.dom = {
+            statusDot: Utils.$('statusDot'),
+            statusText: Utils.$('statusText'),
+            statusUser: Utils.$('statusUser'),
+            dialerNumber: Utils.$('dialerNumber'),
+            dialerStatus: Utils.$('dialerStatus'),
+            callTimer: Utils.$('callTimer'),
+            voiceAnimation: Utils.$('voiceAnimation'),
+            networkStats: Utils.$('networkStats'),
+            btnCall: Utils.$('btnCall'),
+            btnHangup: Utils.$('btnHangup'),
+            btnClear: Utils.$('btnClear'),
+            btnRegister: Utils.$('btnRegister'),
+            btnRegisterText: Utils.$('btnRegisterText'),
+            wss: Utils.$('wss'),
+            user: Utils.$('user'),
+            domain: Utils.$('domain'),
+            pass: Utils.$('pass'),
+            logArea: Utils.$('logArea'),
+            logCount: Utils.$('logCount'),
+            incomingModal: Utils.$('incomingModal'),
+            callerNumber: Utils.$('callerNumber'),
+            toast: Utils.$('toast'),
+            remoteAudio: Utils.$('remoteAudio'),
+            creditsPopup: Utils.$('creditsPopup'),
+            contactsSearch: Utils.$('contactsSearch'),
+            contactName: Utils.$('contactName'),
+            contactNumber: Utils.$('contactNumber')
+          };
+        },
+
+        bindEvents() {
+          // Tabs
+          document.querySelector('.tabs').addEventListener('click', (e) => {
+            const tab = e.target.closest('.tab');
+            if (tab) this.switchTab(tab.dataset.tab);
+          });
+
+          // Theme
+          document.querySelector('.theme-switcher').addEventListener('click', (e) => {
+            const btn = e.target.closest('.theme-btn');
+            if (btn) this.setTheme(btn.dataset.theme);
+          });
+
+          // Keypad
+          document.querySelector('.keypad').addEventListener('click', (e) => {
+            const key = e.target.closest('.key');
+            if (key) this.pressKey(key.dataset.key);
+          });
+
+          // Control buttons
+          this.dom.btnCall.addEventListener('click', () => this.call());
+          this.dom.btnHangup.addEventListener('click', () => this.hangup());
+          this.dom.btnClear.addEventListener('click', () => this.clearNumber());
+          this.dom.btnRegister.addEventListener('click', () => this.toggleRegistration());
+
+          // Config inputs
+          const saveConfig = Utils.debounce(() => this.saveConfig(), SAVE_DEBOUNCE_MS);
+          [this.dom.wss, this.dom.user, this.dom.domain, this.dom.pass].forEach(input => {
+            input.addEventListener('input', saveConfig);
+          });
+
+          // Export/Import
+          Utils.$('btnExport').addEventListener('click', () => this.exportConfig());
+          Utils.$('btnImport').addEventListener('click', () => Utils.$('fileImport').click());
+          Utils.$('fileImport').addEventListener('change', (e) => this.importConfig(e));
+
+          // Log
+          Utils.$('btnClearLog').addEventListener('click', () => this.clearLogs());
+
+          // History
+          Utils.$('btnClearHistory').addEventListener('click', () => {
+            if (confirm('Limpar todo o historico de chamadas?')) {
+              CallHistory.clear();
+              this.toast('Historico limpo', 'success');
+            }
+          });
+          Utils.$('btnExportHistory').addEventListener('click', () => CallHistory.export());
+
+          // Contacts
+          this.dom.contactsSearch.addEventListener('input', (e) => {
+            ContactsManager.search(e.target.value);
+          });
+
+          Utils.$('btnAddContact').addEventListener('click', () => {
+            const name = this.dom.contactName.value.trim();
+            const number = this.dom.contactNumber.value.trim();
+            
+            if (ContactsManager.add(name, number)) {
+              this.dom.contactName.value = '';
+              this.dom.contactNumber.value = '';
+            }
+          });
+
+          // Incoming call modal
+          Utils.$('btnAnswer').addEventListener('click', () => this.answerCall());
+          Utils.$('btnReject').addEventListener('click', () => this.rejectCall());
+
+          // Credits
+          Utils.$('closeCreditsBtn').addEventListener('click', () => this.closeCredits());
+
+          // Keyboard
+          document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+        },
+
+        switchTab(tabId) {
+          Utils.$$('.tab').forEach(t => {
+            t.classList.toggle('active', t.dataset.tab === tabId);
+            t.setAttribute('aria-selected', t.dataset.tab === tabId);
+          });
+          
+          Utils.$$('.panel').forEach(p => {
+            p.classList.toggle('active', p.id === `panel-${tabId}`);
+          });
+        },
+
+        setTheme(theme) {
+          document.documentElement.setAttribute('data-theme', theme);
+          
+          Utils.$$('.theme-btn').forEach(btn => {
+            const isActive = btn.dataset.theme === theme;
+            btn.classList.toggle('active', isActive);
+            btn.setAttribute('aria-pressed', isActive);
+          });
+
+          Storage.set(STORAGE_KEYS.THEME, theme);
+          this.log(`Tema alterado: ${theme}`, LOG_TYPES.DEBUG);
+        },
+
+        loadTheme() {
+          const theme = Storage.get(STORAGE_KEYS.THEME, 'dark');
+          this.setTheme(theme);
+        },
+
+        loadConfig() {
+          const config = Storage.get(STORAGE_KEYS.CONFIG, {});
+          
+          if (config.wss) this.dom.wss.value = config.wss;
+          if (config.user) this.dom.user.value = config.user;
+          if (config.domain) this.dom.domain.value = config.domain;
+          if (config.pass) this.dom.pass.value = config.pass;
+
+          this.log('Configuracoes carregadas do storage', LOG_TYPES.DEBUG);
+        },
+
+        saveConfig() {
+          const config = {
+            wss: this.dom.wss.value.trim(),
+            user: this.dom.user.value.trim(),
+            domain: this.dom.domain.value.trim(),
+            pass: this.dom.pass.value
+          };
+
+          Storage.set(STORAGE_KEYS.CONFIG, config);
+        },
+
+        validateConfig() {
+          let isValid = true;
+          const errors = [];
+
+          [this.dom.wss, this.dom.user, this.dom.domain, this.dom.pass].forEach(el => {
+            el.classList.remove('error');
+          });
+
+          if (!this.dom.wss.value.trim()) {
+            this.dom.wss.classList.add('error');
+            errors.push('Servidor WSS e obrigatorio');
+            isValid = false;
+          } else if (!Utils.isValidWSS(this.dom.wss.value.trim())) {
+            this.dom.wss.classList.add('error');
+            errors.push('URL WSS invalida');
+            isValid = false;
+          }
+
+          if (!this.dom.user.value.trim()) {
+            this.dom.user.classList.add('error');
+            errors.push('Usuario e obrigatorio');
+            isValid = false;
+          }
+
+          if (!this.dom.domain.value.trim()) {
+            this.dom.domain.classList.add('error');
+            errors.push('Dominio e obrigatorio');
+            isValid = false;
+          } else if (!Utils.isValidDomain(this.dom.domain.value.trim())) {
+            this.dom.domain.classList.add('error');
+            errors.push('Dominio invalido');
+            isValid = false;
+          }
+
+          if (!this.dom.pass.value) {
+            this.dom.pass.classList.add('error');
+            errors.push('Senha e obrigatoria');
+            isValid = false;
+          }
+
+          if (!isValid) {
+            errors.forEach(err => this.log(`[${ERROR_CODES.VALIDATION}] ${err}`, LOG_TYPES.ERROR));
+            this.toast(errors[0], 'error');
+          }
+
+          return isValid;
+        },
+
+        exportConfig() {
+          const data = {
+            app: APP_NAME,
+            version: VERSION,
+            exportDate: new Date().toISOString(),
+            config: {
+              wss: this.dom.wss.value,
+              user: this.dom.user.value,
+              domain: this.dom.domain.value,
+              pass: this.dom.pass.value
+            },
+            contacts: ContactsManager.contacts
+          };
+
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `softphone-config-${new Date().toISOString().slice(0, 10)}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+
+          this.log('Configuracao exportada com sucesso', LOG_TYPES.SUCCESS);
+          this.toast('Configuracao exportada', 'success');
+        },
+
+        importConfig(e) {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            try {
+              const data = JSON.parse(event.target.result);
+              
+              if (data.config) {
+                if (data.config.wss) this.dom.wss.value = data.config.wss;
+                if (data.config.user) this.dom.user.value = data.config.user;
+                if (data.config.domain) this.dom.domain.value = data.config.domain;
+                if (data.config.pass) this.dom.pass.value = data.config.pass;
+                this.saveConfig();
+              }
+
+              if (data.contacts && Array.isArray(data.contacts)) {
+                ContactsManager.contacts = data.contacts;
+                ContactsManager.save();
+                ContactsManager.render();
+                ContactsManager.renderFavorites();
+                ContactsManager.updateCounts();
+              }
+
+              this.log('Configuracao importada com sucesso', LOG_TYPES.SUCCESS);
+              this.toast('Configuracao importada', 'success');
+
+            } catch (error) {
+              this.log(`[${ERROR_CODES.STORAGE}] Erro ao importar: ${error.message}`, LOG_TYPES.ERROR);
+              this.toast('Erro ao importar arquivo', 'error');
+            }
+          };
+
+          reader.onerror = () => {
+            this.log(`[${ERROR_CODES.STORAGE}] Erro ao ler arquivo`, LOG_TYPES.ERROR);
+            this.toast('Erro ao ler arquivo', 'error');
+          };
+
+          reader.readAsText(file);
+          e.target.value = '';
+        },
+
+        dialNumber(number) {
+          this.dom.dialerNumber.textContent = number;
+          this.dom.btnCall.disabled = false;
+          this.switchTab('dialer');
+          this.log(`Numero discado: ${number}`, LOG_TYPES.DEBUG);
+        },
+
+        pressKey(key) {
+          if (!key) return;
+
+          const current = this.dom.dialerNumber.textContent.trim();
+          const newNumber = (current === '' || current === '\u00A0') ? key : current + key;
+          
+          this.dom.dialerNumber.textContent = newNumber;
+          this.dom.btnCall.disabled = false;
+
+          if (this.isInCall && this.session) {
+            try {
+              this.session.sendDTMF(key);
+              this.log(`DTMF enviado: ${key}`, LOG_TYPES.DEBUG);
+            } catch (error) {
+              this.log(`Erro ao enviar DTMF: ${error.message}`, LOG_TYPES.WARNING);
+            }
+          }
+        },
+
+        clearNumber() {
+          const current = this.dom.dialerNumber.textContent.trim();
+          
+          if (current.length > 1) {
+            this.dom.dialerNumber.textContent = current.slice(0, -1);
+          } else {
+            this.dom.dialerNumber.innerHTML = '&nbsp;';
+            this.dom.btnCall.disabled = true;
+          }
+        },
+
+        handleKeyboard(e) {
+          if (e.target.tagName === 'INPUT') return;
+
+          const key = e.key;
+
+          if (/^[0-9*#]$/.test(key)) {
+            e.preventDefault();
+            this.pressKey(key);
+          } else if (key === 'Backspace') {
+            e.preventDefault();
+            this.clearNumber();
+          } else if (key === 'Enter' && !this.dom.btnCall.disabled) {
+            e.preventDefault();
+            this.call();
+          } else if (key === 'Escape' && this.isInCall) {
+            e.preventDefault();
+            this.hangup();
+          }
+        },
+
+        toggleRegistration() {
+          if (this.isRegistered) {
+            this.unregister();
+          } else {
+            this.register();
+          }
+        },
+
+        register: ErrorHandler.wrap(function() {
+          if (!checkJsSIP()) {
+            this.log(`[${ERROR_CODES.JSSIP_NOT_LOADED}] JsSIP nao esta carregado`, LOG_TYPES.ERROR);
+            this.toast('Biblioteca SIP nao carregada', 'error');
+            return;
+          }
+
+          if (!this.validateConfig()) return;
+
+          this.setStatus('connecting', 'Conectando...');
+          this.log('Iniciando conexao SIP...', LOG_TYPES.INFO);
+
+          const wss = this.dom.wss.value.trim();
+          const user = this.dom.user.value.trim();
+          const domain = this.dom.domain.value.trim();
+          const pass = this.dom.pass.value;
+
+          const socket = new JsSIP.WebSocketInterface(wss);
+
+          const config = {
+            sockets: [socket],
+            uri: `sip:${user}@${domain}`,
+            password: pass,
+            display_name: user,
+            register: true,
+            session_timers: false,
+            connection_recovery_min_interval: 2,
+            connection_recovery_max_interval: 30
+          };
+
+          this.log(`Conectando a ${wss}`, LOG_TYPES.INFO);
+          this.log(`URI: sip:${user}@${domain}`, LOG_TYPES.DEBUG);
+
+          try {
+            this.ua = new JsSIP.UA(config);
+            this.setupUAEvents();
+            this.ua.start();
+          } catch (error) {
+            this.log(`[${ERROR_CODES.CONNECTION}] Erro ao criar UA: ${error.message}`, LOG_TYPES.ERROR);
+            this.setStatus('offline', 'Erro de conexao');
+            this.toast('Erro ao conectar', 'error');
+          }
+
+        }, 'Softphone.register'),
+
+        unregister() {
+          if (!this.ua) return;
+
+          this.log('Desconectando...', LOG_TYPES.INFO);
+          
+          try {
+            this.ua.stop();
+          } catch (error) {
+            this.log(`Erro ao desconectar: ${error.message}`, LOG_TYPES.WARNING);
+          }
+
+          this.ua = null;
+          this.isRegistered = false;
+          this.setStatus('offline', 'Desconectado');
+          this.dom.btnRegisterText.textContent = 'Conectar';
+          this.dom.statusUser.textContent = '-';
+          this.log('Desconectado com sucesso', LOG_TYPES.SUCCESS);
+        },
+
+        setupUAEvents() {
+          this.ua.on('connected', () => {
+            this.log('WebSocket conectado', LOG_TYPES.SUCCESS);
+          });
+
+          this.ua.on('disconnected', () => {
+            this.log('WebSocket desconectado', LOG_TYPES.WARNING);
+            this.isRegistered = false;
+            this.setStatus('offline', 'Desconectado');
+            this.dom.btnRegisterText.textContent = 'Conectar';
+          });
+
+          this.ua.on('registered', () => {
+            this.isRegistered = true;
+            this.setStatus('online', 'Registrado');
+            this.dom.btnRegisterText.textContent = 'Desconectar';
+            this.dom.statusUser.textContent = this.dom.user.value;
+            this.log('Registrado com sucesso no servidor SIP', LOG_TYPES.SUCCESS);
+            this.toast('Conectado', 'success');
+          });
+
+          this.ua.on('unregistered', () => {
+            this.isRegistered = false;
+            this.setStatus('offline', 'Desconectado');
+            this.dom.btnRegisterText.textContent = 'Conectar';
+            this.log('Registro removido', LOG_TYPES.INFO);
+          });
+
+          this.ua.on('registrationFailed', (e) => {
+            const cause = e.cause || 'Desconhecido';
+            const statusCode = e.response?.status_code;
+            const errorMsg = statusCode ? ErrorHandler.getSIPErrorMessage(statusCode) : cause;
+            
+            this.isRegistered = false;
+            this.setStatus('offline', 'Falha no registro');
+            this.dom.btnRegisterText.textContent = 'Conectar';
+            this.log(`[${ERROR_CODES.REGISTRATION}] Falha no registro: ${errorMsg}`, LOG_TYPES.ERROR);
+            this.toast(`Falha: ${errorMsg}`, 'error');
+          });
+
+          this.ua.on('newRTCSession', (e) => {
+            const session = e.session;
+            
+            session.on('sdp', (ev) => {
+              if (ev.originator === 'remote') return;
+              try {
+                const request = session._request || session.request;
+                if (request && request.headers) {
+                  delete request.headers['Session-Expires'];
+                  delete request.headers['Min-SE'];
+                  delete request.headers['timer'];
+                }
+              } catch (err) {
+                // Silently ignore
+              }
+            });
+
+            if (e.originator === 'remote') {
+              this.handleIncomingCall(session);
+            } else {
+              this.setupSessionEvents(session);
+            }
+          });
+        },
+
+        call: ErrorHandler.wrap(function() {
+          const number = Utils.sanitizeNumber(this.dom.dialerNumber.textContent);
+          
+          if (!number) {
+            this.toast('Digite um numero', 'warning');
+            return;
+          }
+
+          if (!this.isRegistered) {
+            this.toast('Conecte-se primeiro', 'warning');
+            return;
+          }
+
+          if (this.isInCall) {
+            this.toast('Ja existe uma chamada em andamento', 'warning');
+            return;
+          }
+
+          this.log(`Iniciando chamada para ${number}...`, LOG_TYPES.INFO);
+          this.currentCallNumber = number;
+          this.currentCallType = 'outgoing';
+
+          const domain = this.dom.domain.value.trim();
+          const target = `sip:${number}@${domain}`;
+
+          const options = {
+            mediaConstraints: { audio: true, video: false },
+            rtcOfferConstraints: { offerToReceiveAudio: true, offerToReceiveVideo: false },
+            sessionTimersExpires: 0,
+            pcConfig: {
+              iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' }
+              ]
+            }
+          };
+
+          try {
+            this.session = this.ua.call(target, options);
+            this.setupSessionEvents(this.session);
+          } catch (error) {
+            this.log(`[${ERROR_CODES.CALL}] Erro ao iniciar chamada: ${error.message}`, LOG_TYPES.ERROR);
+            this.toast('Erro ao iniciar chamada', 'error');
+          }
+
+        }, 'Softphone.call'),
+
+        hangup() {
+          if (!this.session) return;
+
+          this.log('Encerrando chamada...', LOG_TYPES.INFO);
+
+          try {
+            this.session.terminate();
+          } catch (error) {
+            this.log(`Erro ao encerrar: ${error.message}`, LOG_TYPES.WARNING);
+          }
+        },
+
+        handleIncomingCall(session) {
+          const caller = session.remote_identity?.uri?.user || 'Desconhecido';
+          
+          this.session = session;
+          this.currentCallNumber = caller;
+          this.currentCallType = 'incoming';
+          
+          this.log(`Chamada recebida de ${caller}`, LOG_TYPES.INFO);
+          
+          this.dom.callerNumber.textContent = caller;
+          this.dom.incomingModal.classList.add('active');
+
+          this.setupSessionEvents(session);
+
+          session.on('failed', () => {
+            this.dom.incomingModal.classList.remove('active');
+          });
+
+          session.on('ended', () => {
+            this.dom.incomingModal.classList.remove('active');
+          });
+        },
+
+        answerCall() {
+          if (!this.session) return;
+
+          this.log('Atendendo chamada...', LOG_TYPES.INFO);
+          this.dom.incomingModal.classList.remove('active');
+
+          const options = {
+            mediaConstraints: { audio: true, video: false }
+          };
+
+          try {
+            this.session.answer(options);
+          } catch (error) {
+            this.log(`[${ERROR_CODES.CALL}] Erro ao atender: ${error.message}`, LOG_TYPES.ERROR);
+            this.toast('Erro ao atender chamada', 'error');
+          }
+        },
+
+        rejectCall() {
+          if (!this.session) return;
+
+          this.log('Rejeitando chamada...', LOG_TYPES.INFO);
+          this.dom.incomingModal.classList.remove('active');
+
+          try {
+            this.session.terminate({ status_code: 486 });
+            
+            CallHistory.add({
+              number: this.currentCallNumber,
+              type: 'missed',
+              status: 'rejected',
+              duration: 0
+            });
+          } catch (error) {
+            this.log(`Erro ao rejeitar: ${error.message}`, LOG_TYPES.WARNING);
+          }
+        },
+
+        setupSessionEvents(session) {
+          session.on('connecting', () => {
+            this.log('Conectando chamada...', LOG_TYPES.INFO);
+            this.setDialerStatus('Conectando...');
+          });
+
+          session.on('progress', (e) => {
+            const status = e.response?.status_code;
+            if (status === 180 || status === 183) {
+              this.log('Chamando... (ring)', LOG_TYPES.INFO);
+              this.setDialerStatus('Chamando...');
+            }
+          });
+
+          session.on('accepted', () => {
+            this.log('Chamada atendida', LOG_TYPES.SUCCESS);
+            this.setDialerStatus('Em chamada');
+          });
+
+          session.on('confirmed', () => {
+            this.isInCall = true;
+            this.callStartTime = new Date();
+            this.startCallTimer();
+            this.dom.voiceAnimation.classList.add('active');
+            this.dom.btnCall.disabled = true;
+            this.dom.btnHangup.disabled = false;
+            this.log('Chamada confirmada - audio ativo', LOG_TYPES.SUCCESS);
+          });
+
+          session.on('ended', (e) => {
+            const cause = e.cause || 'Normal';
+            this.endCall(`Chamada encerrada (${cause})`);
+          });
+
+          session.on('failed', (e) => {
+            const cause = e.cause || 'Desconhecido';
+            const statusCode = e.message?.status_code;
+            const errorMsg = statusCode ? ErrorHandler.getSIPErrorMessage(statusCode) : cause;
+            
+            this.log(`[${ERROR_CODES.CALL}] Chamada falhou: ${errorMsg}`, LOG_TYPES.ERROR);
+            
+            const callDuration = this.callStartTime ? 
+              Math.floor((new Date() - this.callStartTime) / 1000) : 0;
+            
+            CallHistory.add({
+              number: this.currentCallNumber,
+              type: this.currentCallType,
+              status: 'failed',
+              duration: callDuration
+            });
+
+            this.endCall(`Falha: ${errorMsg}`);
+          });
+
+          session.on('peerconnection', (e) => {
+            const pc = e.peerconnection;
+            
+            // Start network stats monitoring
+            NetworkStats.start(pc);
+            
+            pc.addEventListener('track', (event) => {
+              this.log('Stream de audio recebido', LOG_TYPES.DEBUG);
+              if (event.streams && event.streams[0]) {
+                this.dom.remoteAudio.srcObject = event.streams[0];
+                this.dom.remoteAudio.play().catch(err => {
+                  this.log(`Erro ao reproduzir audio: ${err.message}`, LOG_TYPES.WARNING);
+                });
+              }
+            });
+
+            pc.addEventListener('iceconnectionstatechange', () => {
+              this.log(`ICE state: ${pc.iceConnectionState}`, LOG_TYPES.DEBUG);
+            });
+          });
+        },
+
+        endCall(message) {
+          const duration = this.callStartTime ? 
+            Math.floor((new Date() - this.callStartTime) / 1000) : 0;
+
+          if (this.currentCallNumber && this.callStartTime) {
+            CallHistory.add({
+              number: this.currentCallNumber,
+              type: this.currentCallType,
+              status: 'completed',
+              duration: duration,
+              startTime: this.callStartTime.toISOString()
+            });
+          }
+
+          this.isInCall = false;
+          this.session = null;
+          this.callStartTime = null;
+          this.currentCallNumber = '';
+          
+          this.stopCallTimer();
+          NetworkStats.stop();
+          this.dom.voiceAnimation.classList.remove('active');
+          this.dom.btnCall.disabled = this.dom.dialerNumber.textContent.trim() === '' || 
+                                      this.dom.dialerNumber.textContent.trim() === '\u00A0';
+          this.dom.btnHangup.disabled = true;
+          this.dom.remoteAudio.srcObject = null;
+          
+          this.log(message, LOG_TYPES.INFO);
+          this.setDialerStatus('Digite o numero');
+
+          setTimeout(() => {
+            if (!this.isInCall) {
+              this.dom.callTimer.classList.remove('active');
+            }
+          }, STATUS_RESET_DELAY);
+        },
+
+        startCallTimer() {
+          this.dom.callTimer.classList.add('active');
+          this.dom.callTimer.textContent = '00:00';
+
+          this.callTimerInterval = setInterval(() => {
+            if (!this.callStartTime) return;
+            const elapsed = Math.floor((new Date() - this.callStartTime) / 1000);
+            this.dom.callTimer.textContent = Utils.formatDuration(elapsed);
+          }, 1000);
+        },
+
+        stopCallTimer() {
+          if (this.callTimerInterval) {
+            clearInterval(this.callTimerInterval);
+            this.callTimerInterval = null;
+          }
+        },
+
+        setStatus(status, text) {
+          this.dom.statusDot.className = `status-dot ${status}`;
+          this.dom.statusText.textContent = text;
+        },
+
+        setDialerStatus(text) {
+          this.dom.dialerStatus.textContent = text;
+        },
+
+        log(message, type = LOG_TYPES.INFO) {
+          const entry = {
+            time: Utils.formatTime(new Date()),
+            type: type,
+            message: message
+          };
+
           this.logs.push(entry);
-          
+          this.logCount++;
+
           if (this.logs.length > MAX_LOGS) {
             this.logs = this.logs.slice(-MAX_LOGS);
           }
-          
-          this.saveDebounced();
-          this.appendEntry(entry);
-          this.updateCount();
-          
-          const consoleMethod = type === LOG_TYPES.ERROR ? 'error' : 
-                               type === LOG_TYPES.WARNING ? 'warn' : 'log';
-          console[consoleMethod](`[${APP_NAME}] [${type.toUpperCase()}] ${message}`);
-        },
 
-        info(msg, details) { this.log(msg, LOG_TYPES.INFO, details); },
-        success(msg, details) { this.log(msg, LOG_TYPES.SUCCESS, details); },
-        warning(msg, details) { this.log(msg, LOG_TYPES.WARNING, details); },
-        error(msg, details) { this.log(msg, LOG_TYPES.ERROR, details); },
-        debug(msg, details) { this.log(msg, LOG_TYPES.DEBUG, details); },
+          this.renderLogEntry(entry);
+          this.dom.logCount.textContent = this.logCount;
 
-        render() {
-          if (!this.logArea) return;
-          
-          const fragment = document.createDocumentFragment();
-          this.logs.forEach(entry => {
-            fragment.appendChild(this.createEntryElement(entry));
-          });
-          
-          this.logArea.innerHTML = '';
-          this.logArea.appendChild(fragment);
-          this.scrollToBottom();
-        },
-
-        appendEntry(entry) {
-          if (!this.logArea) return;
-          
-          const element = this.createEntryElement(entry);
-          this.logArea.appendChild(element);
-          
-          while (this.logArea.children.length > MAX_LOGS) {
-            this.logArea.removeChild(this.logArea.firstChild);
+          const prefix = `[${APP_NAME}]`;
+          switch (type) {
+            case LOG_TYPES.ERROR:
+              console.error(prefix, message);
+              break;
+            case LOG_TYPES.WARNING:
+              console.warn(prefix, message);
+              break;
+            case LOG_TYPES.SUCCESS:
+              console.log(`%c${prefix} ${message}`, 'color: #10b981');
+              break;
+            default:
+              console.log(prefix, message);
           }
-          
-          this.scrollToBottom();
+
+          this.debouncedSaveLogs();
         },
 
-        createEntryElement(entry) {
-          const div = document.createElement('div');
-          div.className = 'log-entry';
-          div.dataset.id = entry.id;
-          
-          const typeLabel = {
+        debouncedSaveLogs: Utils.debounce(function() {
+          Storage.set(STORAGE_KEYS.LOGS, this.logs.slice(-100));
+        }, 2000),
+
+        renderLogEntry(entry) {
+          const typeLabels = {
             [LOG_TYPES.INFO]: 'INFO',
             [LOG_TYPES.SUCCESS]: 'OK',
             [LOG_TYPES.WARNING]: 'WARN',
             [LOG_TYPES.ERROR]: 'ERR',
             [LOG_TYPES.DEBUG]: 'DBG'
-          }[entry.type] || 'LOG';
-          
+          };
+
+          const div = document.createElement('div');
+          div.className = 'log-entry';
           div.innerHTML = `
             <span class="log-time">${entry.time}</span>
-            <span class="log-type ${entry.type}">${typeLabel}</span>
-            <span class="log-msg ${entry.type}">${this.escapeHtml(entry.message)}</span>
+            <span class="log-type ${entry.type}">${typeLabels[entry.type] || 'INFO'}</span>
+            <span class="log-msg ${entry.type}">${Utils.escapeHtml(entry.message)}</span>
           `;
-          
-          return div;
+
+          this.dom.logArea.appendChild(div);
+
+          requestAnimationFrame(() => {
+            this.dom.logArea.scrollTop = this.dom.logArea.scrollHeight;
+          });
         },
 
-        escapeHtml(text) {
-          const div = document.createElement('div');
-          div.textContent = text;
-          return div.innerHTML;
+        loadLogs() {
+          const saved = Storage.get(STORAGE_KEYS.LOGS, []);
+          saved.forEach(entry => {
+            this.logs.push(entry);
+            this.logCount++;
+            this.renderLogEntry(entry);
+          });
+          this.dom.logCount.textContent = this.logCount;
         },
 
-        scrollToBottom() {
-          if (this.logArea) {
-            requestAnimationFrame(() => {
-              this.logArea.scrollTop = this.logArea.scrollHeight;
-            });
-          }
-        },
-
-        updateCount() {
-          if (this.logCount) {
-            this.logCount.textContent = this.logs.length;
-          }
-        },
-
-        clear() {
+        clearLogs() {
           this.logs = [];
-          Storage.save(STORAGE_KEYS.LOGS, []);
-          if (this.logArea) {
-            this.logArea.innerHTML = '';
-          }
-          this.updateCount();
-          this.info('Log limpo');
+          this.logCount = 0;
+          this.dom.logArea.innerHTML = '';
+          this.dom.logCount.textContent = '0';
+          Storage.remove(STORAGE_KEYS.LOGS);
+          this.log('Logs limpos', LOG_TYPES.INFO);
         },
 
-        _saveTimeout: null,
-        saveDebounced() {
-          if (this._saveTimeout) {
-            clearTimeout(this._saveTimeout);
-          }
-          this._saveTimeout = setTimeout(() => {
-            Storage.save(STORAGE_KEYS.LOGS, this.logs);
-          }, 1000);
-        }
-      };
-
-      // ============================================
-      // UI MANAGER
-      // ============================================
-      const UI = {
-        elements: {},
-        toastTimeout: null,
-
-        init() {
-          this.cacheElements();
-          this.bindEvents();
-          this.loadTheme();
-          this.loadConfig();
-          this.loadCreditsState();
-        },
-
-        cacheElements() {
-          const ids = [
-            'wss', 'user', 'domain', 'pass',
-            'btnRegister', 'btnRegisterText', 'btnCall', 'btnHangup', 'btnClear',
-            'btnAnswer', 'btnReject', 'btnClearLog', 'btnExport', 'btnImport',
-            'fileImport', 'statusDot', 'statusText', 'statusUser',
-            'dialerNumber', 'dialerStatus', 'callTimer', 'voiceAnimation',
-            'logArea', 'logCount', 'incomingModal', 'callerNumber', 'remoteAudio', 'toast',
-            'creditsPopup', 'closeCreditsBtn'
-          ];
+        toast(message, type = 'info') {
+          this.dom.toast.textContent = message;
+          this.dom.toast.className = `toast ${type}`;
           
-          ids.forEach(id => {
-            this.elements[id] = document.getElementById(id);
-          });
-        },
-
-        bindEvents() {
-          // Theme buttons
-          const themeSwitcher = document.querySelector('.theme-switcher');
-          if (themeSwitcher) {
-            themeSwitcher.addEventListener('click', (e) => {
-              const btn = e.target.closest('.theme-btn');
-              if (btn) this.setTheme(btn.dataset.theme);
-            });
-          }
-
-          // Tabs
-          const tabs = document.querySelector('.tabs');
-          if (tabs) {
-            tabs.addEventListener('click', (e) => {
-              const tab = e.target.closest('.tab');
-              if (tab) this.switchTab(tab.dataset.tab);
-            });
-          }
-
-          // Keypad
-          const keypad = document.querySelector('.keypad');
-          if (keypad) {
-            keypad.addEventListener('click', (e) => {
-              const key = e.target.closest('.key');
-              if (key) Phone.pressKey(key.dataset.key);
-            });
-          }
-
-          // Call controls
-          this.elements.btnCall?.addEventListener('click', () => Phone.call());
-          this.elements.btnHangup?.addEventListener('click', () => Phone.hangup());
-          this.elements.btnClear?.addEventListener('click', () => Phone.clearDisplay());
-
-          // Registration
-          this.elements.btnRegister?.addEventListener('click', () => Phone.register());
-
-          // Incoming call
-          this.elements.btnAnswer?.addEventListener('click', () => Phone.answerCall());
-          this.elements.btnReject?.addEventListener('click', () => Phone.rejectCall());
-
-          // Log
-          this.elements.btnClearLog?.addEventListener('click', () => Logger.clear());
-
-          // Export/Import
-          this.elements.btnExport?.addEventListener('click', () => this.exportData());
-          this.elements.btnImport?.addEventListener('click', () => this.elements.fileImport?.click());
-          this.elements.fileImport?.addEventListener('change', (e) => this.importData(e));
-
-          // Keyboard
-          document.addEventListener('keydown', (e) => this.handleKeyboard(e));
-
-          // Save config on input change
-          let saveTimeout;
-          ['wss', 'user', 'domain', 'pass'].forEach(id => {
-            this.elements[id]?.addEventListener('input', () => {
-              clearTimeout(saveTimeout);
-              saveTimeout = setTimeout(() => this.saveConfig(), SAVE_DEBOUNCE_MS);
-            });
+          requestAnimationFrame(() => {
+            this.dom.toast.classList.add('show');
           });
 
-          // Credits popup
-          this.elements.closeCreditsBtn?.addEventListener('click', () => this.hideCreditsPopup());
-
-          // Network events
-          window.addEventListener('online', () => {
-            Logger.success('Conexao de rede restaurada');
-            this.showToast('Conexao restaurada', 'success');
-          });
-
-          window.addEventListener('offline', () => {
-            Logger.error('Conexao de rede perdida');
-            this.showToast('Sem conexao de rede', 'error');
-          });
-
-          // Page visibility
-          document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-              Logger.debug('Pagina em background');
-            } else {
-              Logger.debug('Pagina ativa');
-            }
-          });
-        },
-
-        setTheme(theme) {
-          if (!theme) return;
-          
-          document.documentElement.setAttribute('data-theme', theme);
-          
-          document.querySelectorAll('.theme-btn').forEach(btn => {
-            const isActive = btn.dataset.theme === theme;
-            btn.classList.toggle('active', isActive);
-            btn.setAttribute('aria-pressed', isActive);
-          });
-          
-          Storage.save(STORAGE_KEYS.THEME, theme);
-          Logger.debug(`Tema alterado para: ${theme}`);
-        },
-
-        loadTheme() {
-          const theme = Storage.load(STORAGE_KEYS.THEME, 'dark');
-          this.setTheme(theme);
-        },
-
-        switchTab(tabName) {
-          if (!tabName) return;
-          
-          document.querySelectorAll('.tab').forEach(t => {
-            const isActive = t.dataset.tab === tabName;
-            t.classList.toggle('active', isActive);
-            t.setAttribute('aria-selected', isActive);
-          });
-          
-          document.querySelectorAll('.panel').forEach(p => {
-            p.classList.toggle('active', p.id === `panel-${tabName}`);
-          });
-        },
-
-        loadConfig() {
-          const config = Storage.load(STORAGE_KEYS.CONFIG, {});
-          
-          if (config.wss && this.elements.wss) this.elements.wss.value = config.wss;
-          if (config.user && this.elements.user) this.elements.user.value = config.user;
-          if (config.domain && this.elements.domain) this.elements.domain.value = config.domain;
-          if (config.pass && this.elements.pass) this.elements.pass.value = config.pass;
-        },
-
-        saveConfig() {
-          const config = {
-            wss: this.elements.wss?.value?.trim() || '',
-            user: this.elements.user?.value?.trim() || '',
-            domain: this.elements.domain?.value?.trim() || '',
-            pass: this.elements.pass?.value || ''
-          };
-          
-          Storage.save(STORAGE_KEYS.CONFIG, config);
-          Logger.debug('Configuracao salva');
-        },
-
-        getConfig() {
-          return {
-            wss: this.elements.wss?.value?.trim() || '',
-            user: this.elements.user?.value?.trim() || '',
-            domain: this.elements.domain?.value?.trim() || '',
-            pass: this.elements.pass?.value || ''
-          };
-        },
-
-        exportData: ErrorHandler.wrap(function() {
-          const data = Storage.exportAll();
-          const json = JSON.stringify(data, null, 2);
-          const blob = new Blob([json], { type: 'application/json' });
-          const url = URL.createObjectURL(blob);
-          
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `softphone_wss_backup_${new Date().toISOString().slice(0, 10)}.json`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          
-          URL.revokeObjectURL(url);
-          
-          Logger.success('Backup exportado com sucesso');
-          UI.showToast('Dados exportados', 'success');
-        }, 'Exportar'),
-
-        importData: ErrorHandler.wrap(function(event) {
-          const file = event.target?.files?.[0];
-          if (!file) return;
-
-          if (!file.name.endsWith('.json')) {
-            Logger.error('Arquivo deve ser .json');
-            UI.showToast('Selecione um arquivo .json', 'error');
-            return;
-          }
-
-          if (file.size > 1024 * 1024) {
-            Logger.error('Arquivo muito grande (max 1MB)');
-            UI.showToast('Arquivo muito grande', 'error');
-            return;
-          }
-
-          Logger.info(`Importando: ${file.name}`);
-
-          const reader = new FileReader();
-          
-          reader.onload = (e) => {
-            try {
-              const data = JSON.parse(e.target.result);
-              const count = Storage.importAll(data);
-              UI.loadConfig();
-              UI.loadTheme();
-              Logger.logs = Storage.load(STORAGE_KEYS.LOGS, []);
-              Logger.render();
-              Logger.updateCount();
-              Logger.success(`Importados ${count} itens`);
-              UI.showToast('Dados importados', 'success');
-            } catch (err) {
-              Logger.error('Erro ao processar JSON: ' + err.message);
-              UI.showToast('Arquivo JSON invalido', 'error');
-            }
-          };
-          
-          reader.onerror = () => {
-            Logger.error('Erro ao ler arquivo');
-            UI.showToast('Erro ao ler arquivo', 'error');
-          };
-          
-          reader.readAsText(file);
-          event.target.value = '';
-        }, 'Importar'),
-
-        handleKeyboard(e) {
-          // Ignore if typing in input
-          if (e.target.tagName === 'INPUT') {
-            if (e.key === 'Enter' && e.target.id === 'pass') {
-              Phone.register();
-            }
-            return;
-          }
-
-          // Number keys
-          if (/^[0-9*#]$/.test(e.key)) {
-            e.preventDefault();
-            Phone.pressKey(e.key);
-          }
-
-          // Enter to call
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            if (Phone.isRegistered && !Phone.session) {
-              Phone.call();
-            }
-          }
-
-          // Escape to hangup
-          if (e.key === 'Escape') {
-            e.preventDefault();
-            Phone.hangup();
-          }
-
-          // Backspace to delete
-          if (e.key === 'Backspace') {
-            e.preventDefault();
-            Phone.backspace();
-          }
-        },
-
-        updateStatus(status, text) {
-          const dot = this.elements.statusDot;
-          const label = this.elements.statusText;
-          
-          if (dot) {
-            dot.classList.remove('online', 'connecting');
-            if (status === 'online') dot.classList.add('online');
-            if (status === 'connecting') dot.classList.add('connecting');
-          }
-          
-          if (label) label.textContent = text || '';
-        },
-
-        updateStatusUser(user) {
-          if (this.elements.statusUser) {
-            this.elements.statusUser.textContent = user || '-';
-          }
-        },
-
-        updateButtons(registered, inCall) {
-          if (this.elements.btnCall) {
-            this.elements.btnCall.disabled = !registered || inCall;
-          }
-          if (this.elements.btnHangup) {
-            this.elements.btnHangup.disabled = !inCall;
-          }
-          if (this.elements.btnRegister) {
-            const txt = this.elements.btnRegisterText;
-            if (txt) txt.textContent = registered ? 'Desconectar' : 'Conectar';
-          }
-        },
-
-        setDialerNumber(number) {
-          if (this.elements.dialerNumber) {
-            this.elements.dialerNumber.textContent = number || '\u00A0';
-          }
-          
-          if (this.elements.btnCall) {
-            this.elements.btnCall.disabled = !Phone.isRegistered || !number || Phone.session;
-          }
-        },
-
-        getDialerNumber() {
-          const el = this.elements.dialerNumber;
-          if (!el) return '';
-          const text = el.textContent || '';
-          return text === '\u00A0' ? '' : text.trim();
-        },
-
-        setDialerStatus(text) {
-          if (this.elements.dialerStatus) {
-            this.elements.dialerStatus.textContent = text || '';
-          }
-        },
-
-        showCallTimer(show) {
-          if (this.elements.callTimer) {
-            this.elements.callTimer.classList.toggle('active', show);
-          }
-        },
-
-        setCallTimer(time) {
-          if (this.elements.callTimer) {
-            this.elements.callTimer.textContent = time || '00:00';
-          }
-        },
-
-        showVoiceAnimation(show) {
-          if (this.elements.voiceAnimation) {
-            this.elements.voiceAnimation.classList.toggle('active', show);
-          }
-        },
-
-        showIncomingModal(show, caller) {
-          if (this.elements.incomingModal) {
-            this.elements.incomingModal.classList.toggle('active', show);
-          }
-          if (this.elements.callerNumber && caller !== undefined) {
-            this.elements.callerNumber.textContent = caller || 'Desconhecido';
-          }
-        },
-
-        showToast(message, type = 'info') {
-          const toast = this.elements.toast;
-          if (!toast) return;
-
-          if (this.toastTimeout) {
-            clearTimeout(this.toastTimeout);
-            toast.classList.remove('show');
-          }
-
-          toast.textContent = message || '';
-          toast.className = `toast ${type}`;
-          
-          toast.offsetHeight;
-          toast.classList.add('show');
-
-          this.toastTimeout = setTimeout(() => {
-            toast.classList.remove('show');
+          setTimeout(() => {
+            this.dom.toast.classList.remove('show');
           }, TOAST_DURATION);
         },
 
-        getRemoteAudio() {
-          return this.elements.remoteAudio;
-        },
-
-        loadCreditsState() {
-          const closed = Storage.load(STORAGE_KEYS.CREDITS_CLOSED, false);
-          if (closed && this.elements.creditsPopup) {
-            this.elements.creditsPopup.classList.add('hidden');
+        checkCreditsPopup() {
+          const closed = Storage.get(STORAGE_KEYS.CREDITS_CLOSED, false);
+          if (closed) {
+            this.dom.creditsPopup.classList.add('hidden');
           }
         },
 
-        hideCreditsPopup() {
-          if (this.elements.creditsPopup) {
-            this.elements.creditsPopup.classList.add('hidden');
-            Storage.save(STORAGE_KEYS.CREDITS_CLOSED, true);
-          }
-        },
-
-        setInputError(id, hasError) {
-          const input = this.elements[id];
-          if (input) {
-            input.classList.toggle('error', hasError);
-          }
-        },
-
-        clearInputErrors() {
-          ['wss', 'user', 'domain', 'pass'].forEach(id => {
-            this.setInputError(id, false);
-          });
+        closeCredits() {
+          this.dom.creditsPopup.classList.add('hidden');
+          Storage.set(STORAGE_KEYS.CREDITS_CLOSED, true);
         }
       };
 
       // ============================================
-      // PHONE MANAGER - Logica SIP corrigida igual ao original
+      // GLOBAL ERROR HANDLERS
       // ============================================
-      const Phone = {
-        ua: null,
-        session: null,
-        callTimer: null,
-        callSeconds: 0,
-        isRegistered: false,
-        isConnecting: false,
-        reconnectAttempts: 0,
-        maxReconnectAttempts: 3,
-
-        validateConfig(config) {
-          const errors = [];
-          
-          UI.clearInputErrors();
-
-          if (!config.wss) {
-            errors.push({ field: 'wss', message: 'Servidor WSS obrigatorio' });
-          } else if (!/^wss?:\/\/.+/.test(config.wss)) {
-            errors.push({ field: 'wss', message: 'Servidor deve comecar com wss://' });
-          }
-
-          if (!config.user) {
-            errors.push({ field: 'user', message: 'Usuario obrigatorio' });
-          }
-
-          if (!config.domain) {
-            errors.push({ field: 'domain', message: 'Dominio obrigatorio' });
-          }
-
-          if (!config.pass) {
-            errors.push({ field: 'pass', message: 'Senha obrigatoria' });
-          }
-
-          errors.forEach(err => {
-            UI.setInputError(err.field, true);
-          });
-
-          return errors;
-        },
-
-        register() {
-          // Se ja esta registrado, desconectar
-          if (this.isRegistered) {
-            this.disconnect();
-            return;
-          }
-
-          if (this.isConnecting) {
-            Logger.warning('Conexao ja em andamento');
-            return;
-          }
-
-          const config = UI.getConfig();
-          const errors = this.validateConfig(config);
-
-          if (errors.length > 0) {
-            errors.forEach(err => Logger.error(err.message));
-            UI.showToast(errors[0].message, 'error');
-            return;
-          }
-
-          if (!navigator.onLine) {
-            Logger.error('Sem conexao de rede');
-            UI.showToast('Sem conexao de rede', 'error');
-            return;
-          }
-
-          // Verificar JsSIP
-          if (!checkJsSIP()) {
-            Logger.error(`[${ERROR_CODES.JSSIP_NOT_LOADED}] Biblioteca JsSIP nao carregada`);
-            UI.updateStatus('offline', 'Erro');
-            UI.showToast('Erro: JsSIP nao disponivel', 'error');
-            return;
-          }
-
-          this.isConnecting = true;
-          
-          Logger.info('Iniciando registro...');
-          Logger.debug(`Servidor: ${config.wss}`);
-          Logger.debug(`Usuario: ${config.user}@${config.domain}`);
-          Logger.debug(`JsSIP: ${jsSIPVersion}`);
-          
-          UI.updateStatus('connecting', 'Conectando...');
-          UI.saveConfig();
-
-          try {
-            const socket = new JsSIP.WebSocketInterface(config.wss);
-
-            const configuration = {
-              sockets: [socket],
-              uri: `sip:${config.user}@${config.domain}`,
-              password: config.pass,
-              register: true,
-              session_timers: false  // IMPORTANTE - igual ao original
-            };
-
-            this.ua = new JsSIP.UA(configuration);
-
-            this.ua.on('newRTCSession', (data) => {
-              const session = data.session;
-
-              // Remover headers do INVITE igual ao original
-              session.on('sending', (e) => {
-                const req = e.request;
-
-                // Remove Session-Expires
-                if (req.headers['Session-Expires']) {
-                  delete req.headers['Session-Expires'];
-                }
-
-                // Remove Min-SE
-                if (req.headers['Min-SE']) {
-                  delete req.headers['Min-SE'];
-                }
-
-                // Remove 'timer' do Supported
-                if (req.headers['Supported']) {
-                  req.headers['Supported'][0] = req.headers['Supported'][0]
-                    .replace('timer', '')
-                    .replace(',,', ',')
-                    .replace(/,$/, '');
-                }
-
-                Logger.debug('Headers Session-Expires/Min-SE/timer removidos do INVITE');
-              });
-
-              // Tratar chamada recebida
-              if (data.originator === 'remote') {
-                this.handleIncomingCall(session);
-              }
-            });
-
-            // Eventos de registro
-            this.ua.on('connected', () => {
-              Logger.success('WebSocket conectado');
-            });
-
-            this.ua.on('registered', () => {
-              this.isConnecting = false;
-              this.isRegistered = true;
-              
-              Logger.success('Registrado com sucesso!');
-              
-              UI.updateStatus('online', 'Conectado');
-              UI.updateStatusUser(config.user);
-              UI.updateButtons(true, false);
-              UI.showToast('Conectado', 'success');
-            });
-
-            this.ua.on('registrationFailed', (e) => {
-              this.isConnecting = false;
-              this.isRegistered = false;
-              
-              const cause = e?.cause || 'Erro desconhecido';
-              Logger.error(`Falha no registro: ${cause}`);
-              
-              UI.updateStatus('offline', 'Falha');
-              UI.updateButtons(false, false);
-              UI.showToast(`Falha: ${ErrorHandler.getSIPErrorMessage(cause)}`, 'error');
-            });
-
-            this.ua.on('unregistered', () => {
-              this.isConnecting = false;
-              this.isRegistered = false;
-              
-              Logger.info('Desregistrado');
-              
-              UI.updateStatus('offline', 'Desconectado');
-              UI.updateStatusUser('-');
-              UI.updateButtons(false, false);
-            });
-
-            this.ua.on('disconnected', () => {
-              this.isConnecting = false;
-              this.isRegistered = false;
-              
-              Logger.warning('Desconectado do servidor');
-              
-              UI.updateStatus('offline', 'Desconectado');
-              UI.updateButtons(false, false);
-            });
-
-            // Habilitar debug do JsSIP
-            JsSIP.debug.enable('JsSIP:*');
-            
-            // Iniciar UA
-            this.ua.start();
-            
-            Logger.info('User Agent iniciado');
-
-          } catch (error) {
-            this.isConnecting = false;
-            Logger.error(`Erro ao criar conexao: ${error.message}`);
-            UI.updateStatus('offline', 'Erro');
-            UI.showToast('Erro de conexao', 'error');
-          }
-        },
-
-        handleIncomingCall(session) {
-          if (this.session) {
-            Logger.warning('Rejeitando chamada - ja existe chamada ativa');
-            session.terminate({ status_code: 486, reason_phrase: 'Busy Here' });
-            return;
-          }
-
-          this.session = session;
-          const caller = session.remote_identity?.uri?.user || 'Desconhecido';
-          
-          Logger.success(`Chamada recebida de: ${caller}`);
-          
-          UI.showIncomingModal(true, caller);
-          UI.setDialerNumber(caller);
-          this.setupSessionEvents(session);
-          UI.updateButtons(true, true);
-        },
-
-        setupSessionEvents(session) {
-          if (!session) return;
-
-          session.on('progress', () => {
-            Logger.info('Chamando...');
-            UI.setDialerStatus('Chamando...');
-          });
-
-          session.on('accepted', () => {
-            Logger.success('Chamada aceita');
-          });
-
-          session.on('confirmed', () => {
-            Logger.success('Chamada atendida!');
-            UI.setDialerStatus('Em chamada');
-            UI.showVoiceAnimation(true);
-            this.startCallTimer();
-          });
-
-          session.on('ended', () => {
-            Logger.info('Chamada encerrada');
-            this.endCall('Encerrada');
-          });
-
-          session.on('failed', (e) => {
-            const cause = e?.cause || 'Erro';
-            Logger.error(`Falha: ${cause}`);
-            this.endCall('Falha');
-            UI.showToast(ErrorHandler.getSIPErrorMessage(cause), 'error');
-          });
-
-          // Conexao de audio
-          session.on('peerconnection', (e) => {
-            if (e?.peerconnection) {
-              e.peerconnection.addEventListener('track', (event) => {
-                const audio = UI.getRemoteAudio();
-                if (audio && event.streams?.[0]) {
-                  audio.srcObject = event.streams[0];
-                  Logger.success('Audio conectado');
-                }
-              });
-            }
-          });
-
-          // Fallback para conexao
-          if (session.connection) {
-            session.connection.addEventListener('track', (event) => {
-              const audio = UI.getRemoteAudio();
-              if (audio && event.streams?.[0]) {
-                audio.srcObject = event.streams[0];
-              }
-            });
-          }
-        },
-
-        call() {
-          if (!this.ua) {
-            Logger.error('Registre primeiro!');
-            UI.showToast('Conecte-se primeiro', 'error');
-            return;
-          }
-          
-          if (!this.isRegistered) {
-            Logger.warning('Conecte-se primeiro');
-            UI.showToast('Conecte-se primeiro', 'error');
-            return;
-          }
-
-          if (this.session) {
-            Logger.warning('Ja existe uma chamada ativa');
-            return;
-          }
-
-          const number = UI.getDialerNumber();
-          if (!number) {
-            Logger.warning('Digite um numero para ligar');
-            UI.showToast('Digite um numero', 'error');
-            return;
-          }
-
-          Logger.info(`Discando para ${number}...`);
-          UI.setDialerStatus('Iniciando...');
-
-          const config = UI.getConfig();
-          
-          try {
-            this.session = this.ua.call(
-              `sip:${number}@${config.domain}`,
-              {
-                sessionTimers: false,  // IMPORTANTE
-                mediaConstraints: { audio: true, video: false }
-              }
-            );
-
-            this.setupSessionEvents(this.session);
-            UI.updateButtons(true, true);
-            
-          } catch (error) {
-            Logger.error(`Erro ao iniciar chamada: ${error.message}`);
-            UI.showToast('Erro ao ligar', 'error');
-            this.session = null;
-          }
-        },
-
-        hangup() {
-          if (this.session) {
-            Logger.info('Enviando BYE...');
-            try {
-              this.session.terminate();
-            } catch (err) {
-              Logger.debug(`Erro ao terminar: ${err.message}`);
-            }
-          } else if (UI.elements.incomingModal?.classList.contains('active')) {
-            this.rejectCall();
-          } else {
-            Logger.debug('Nenhuma chamada ativa.');
-          }
-        },
-
-        answerCall() {
-          if (!this.session) {
-            Logger.warning('Nenhuma chamada para atender');
-            return;
-          }
-
-          Logger.info('Atendendo chamada...');
-          
-          try {
-            this.session.answer({
-              mediaConstraints: { audio: true, video: false }
-            });
-            
-            UI.showIncomingModal(false);
-            
-          } catch (error) {
-            Logger.error(`Erro ao atender: ${error.message}`);
-            UI.showToast('Erro ao atender', 'error');
-          }
-        },
-
-        rejectCall() {
-          if (!this.session) {
-            UI.showIncomingModal(false);
-            return;
-          }
-
-          Logger.info('Rejeitando chamada...');
-          
-          try {
-            this.session.terminate({ 
-              status_code: 486, 
-              reason_phrase: 'Busy Here' 
-            });
-          } catch {}
-          
-          UI.showIncomingModal(false);
-          this.session = null;
-          UI.updateButtons(this.isRegistered, false);
-        },
-
-        endCall(statusText) {
-          UI.setDialerStatus(statusText || 'Encerrada');
-          UI.showVoiceAnimation(false);
-          UI.showIncomingModal(false);
-          this.stopCallTimer();
-          
-          this.session = null;
-          UI.updateButtons(this.isRegistered, false);
-
-          setTimeout(() => {
-            UI.setDialerStatus('Digite o numero');
-          }, STATUS_RESET_DELAY);
-        },
-
-        pressKey(key) {
-          if (!key) return;
-          
-          const current = UI.getDialerNumber();
-          
-          if (current.length >= 20) return;
-          
-          UI.setDialerNumber(current + key);
-
-          // Enviar DTMF se em chamada
-          if (this.session) {
-            try {
-              if (typeof this.session.sendDTMF === 'function') {
-                this.session.sendDTMF(key);
-                Logger.debug(`DTMF: ${key}`);
-              }
-            } catch {}
-          }
-        },
-
-        backspace() {
-          const current = UI.getDialerNumber();
-          if (current.length > 0) {
-            UI.setDialerNumber(current.slice(0, -1));
-          }
-        },
-
-        clearDisplay() {
-          UI.setDialerNumber('');
-        },
-
-        startCallTimer() {
-          this.callSeconds = 0;
-          UI.showCallTimer(true);
-          UI.setCallTimer('00:00');
-
-          this.callTimer = setInterval(() => {
-            this.callSeconds++;
-            const mins = String(Math.floor(this.callSeconds / 60)).padStart(2, '0');
-            const secs = String(this.callSeconds % 60).padStart(2, '0');
-            UI.setCallTimer(`${mins}:${secs}`);
-          }, 1000);
-        },
-
-        stopCallTimer() {
-          if (this.callTimer) {
-            clearInterval(this.callTimer);
-            this.callTimer = null;
-          }
-          UI.showCallTimer(false);
-          this.callSeconds = 0;
-        },
-
-        disconnect() {
-          if (this.session) {
-            try {
-              this.session.terminate();
-            } catch {}
-            this.session = null;
-          }
-          
-          if (this.ua) {
-            try {
-              this.ua.stop();
-            } catch {}
-            this.ua = null;
-          }
-          
-          this.isRegistered = false;
-          this.isConnecting = false;
-          
-          Logger.info('Desconectado');
-          UI.updateStatus('offline', 'Desconectado');
-          UI.updateStatusUser('-');
-          UI.updateButtons(false, false);
-        }
-      };
-
-      // ============================================
-      // INITIALIZATION
-      // ============================================
-      function init() {
-        try {
-          const startTime = performance.now();
-          
-          UI.init();
-          Logger.init();
-          
-          const loadTime = (performance.now() - startTime).toFixed(0);
-          
-          Logger.success(`${APP_NAME} v${VERSION} iniciado`);
-          Logger.info(`Tempo de carga: ${loadTime}ms`);
-          
-          // Verificar JsSIP
-          if (checkJsSIP()) {
-            Logger.success(`JsSIP ${jsSIPVersion} carregado`);
-          } else {
-            Logger.error(`[${ERROR_CODES.JSSIP_NOT_LOADED}] JsSIP nao carregado`);
-          }
-          
-          Logger.info('Configure o servidor WSS e clique em Conectar');
-          
-          // Info do sistema
-          Logger.debug(`Navigator: ${navigator.userAgent.split(' ').slice(-2).join(' ')}`);
-          Logger.debug(`Online: ${navigator.onLine ? 'Sim' : 'Nao'}`);
-          
-          // Verificar WebRTC
-          if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            Logger.warning('WebRTC pode nao ser suportado');
-          }
-          
-        } catch (error) {
-          console.error(`[${APP_NAME}] Erro ao inicializar:`, error);
-        }
-      }
-
-      // Inicializar quando DOM estiver pronto
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-      } else {
-        init();
-      }
-
-      // Error handlers globais
       window.addEventListener('error', (e) => {
-        console.error(`[${APP_NAME}] Erro:`, e.error);
+        ErrorHandler.handle(e.error || e.message, 'Erro Global');
       });
 
       window.addEventListener('unhandledrejection', (e) => {
-        console.error(`[${APP_NAME}] Promise rejeitada:`, e.reason);
+        ErrorHandler.handle(e.reason, 'Promise Rejeitada');
       });
+
+      // ============================================
+      // INITIALIZE
+      // ============================================
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => Softphone.init());
+      } else {
+        Softphone.init();
+      }
+
+      // Expose for debugging
+      window.Softphone = Softphone;
+      window.CallHistory = CallHistory;
+      window.ContactsManager = ContactsManager;
+      window.NetworkStats = NetworkStats;
 
     })();
   </script>
