@@ -1011,9 +1011,21 @@
       background: var(--bg-tertiary);
     }
 
+    /* Novo grid para incluir botao Salvar separado */
     .contacts-add-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .contacts-add-inputs {
       display: grid;
-      grid-template-columns: 1fr 1fr auto;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .contacts-add-actions {
+      display: flex;
       gap: 8px;
     }
 
@@ -1033,6 +1045,7 @@
     }
 
     .contacts-add-btn {
+      flex: 1;
       padding: 10px 16px;
       background: var(--accent);
       color: #fff;
@@ -1042,6 +1055,10 @@
       font-weight: 600;
       cursor: pointer;
       transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
     }
 
     [data-theme="green"] .contacts-add-btn {
@@ -1051,6 +1068,21 @@
     .contacts-add-btn:hover {
       background: var(--accent-hover);
     }
+
+    .contacts-add-btn.save-btn {
+      background: var(--success);
+    }
+
+    .contacts-add-btn.save-btn:hover {
+      background: var(--success-hover);
+    }
+
+    .contacts-add-btn svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
 
     /* Favoritos Panel Styles */
     .favorites-container {
@@ -2003,11 +2035,23 @@
           </div>
           <div id="contactsList"></div>
         </div>
+        <!-- Formulario com botao Salvar separado -->
         <div class="contacts-add-form">
           <div class="contacts-add-row">
-            <input type="text" class="contacts-add-input" id="contactName" placeholder="Nome">
-            <input type="tel" class="contacts-add-input" id="contactNumber" placeholder="Numero">
-            <button class="contacts-add-btn" id="btnAddContact">Adicionar</button>
+            <div class="contacts-add-inputs">
+              <input type="text" class="contacts-add-input" id="contactName" placeholder="Nome do contato">
+              <input type="tel" class="contacts-add-input" id="contactNumber" placeholder="Numero">
+            </div>
+            <div class="contacts-add-actions">
+              <button class="contacts-add-btn" id="btnAddContact" type="button">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                Adicionar
+              </button>
+              <button class="contacts-add-btn save-btn" id="btnSaveContacts" type="button">
+                <svg viewBox="0 0 24 24"><path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z"/></svg>
+                Salvar
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -2091,8 +2135,8 @@
         </button>
 
         <div class="data-actions">
-          <button class="btn btn-outline" id="btnExport" type="button">Exportar JSON</button>
-          <button class="btn btn-outline" id="btnImport" type="button">Importar JSON</button>
+          <button class="btn btn-outline" id="btnExport" type="button">Exportar Backup</button>
+          <button class="btn btn-outline" id="btnImport" type="button">Importar Backup</button>
         </div>
         <input type="file" id="fileImport" accept=".json" class="sr-only">
       </div>
@@ -2479,6 +2523,7 @@
 
           this.save();
           this.render();
+          this.renderFavorites();
           this.updateCounts();
 
           Softphone.log(`Contato adicionado: ${contact.name} (${contact.number})`, LOG_TYPES.SUCCESS);
@@ -2914,21 +2959,30 @@
             app: APP_NAME,
             version: VERSION,
             exportDate: new Date().toISOString(),
-            calls: this.calls
+            config: {
+              wss: this.dom.wss.value,
+              user: this.dom.user.value,
+              domain: this.dom.domain.value,
+              pass: this.dom.pass.value
+            },
+            theme: Storage.get(STORAGE_KEYS.THEME, 'dark'),
+            contacts: ContactsManager.contacts,
+            history: CallHistory.calls,
+            logs: this.logs.slice(-100)
           };
 
           const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = `softphone-historico-${new Date().toISOString().slice(0, 10)}.json`;
+          a.download = `softphone-wss-backup-${new Date().toISOString().slice(0, 10)}.json`;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
 
-          Softphone.log('Historico exportado com sucesso', LOG_TYPES.SUCCESS);
-          Softphone.toast('Historico exportado', 'success');
+          this.log('Backup completo exportado (config, contatos, historico, tema)', LOG_TYPES.SUCCESS);
+          this.toast('Backup exportado com sucesso', 'success');
         }
       };
 
@@ -3012,7 +3066,8 @@
             creditsPopup: Utils.$('creditsPopup'),
             contactsSearch: Utils.$('contactsSearch'),
             contactName: Utils.$('contactName'),
-            contactNumber: Utils.$('contactNumber')
+            contactNumber: Utils.$('contactNumber'),
+            btnSaveContacts: Utils.$('btnSaveContacts') // Added btnSaveContacts
           };
         },
 
@@ -3077,6 +3132,12 @@
               this.dom.contactName.value = '';
               this.dom.contactNumber.value = '';
             }
+          });
+
+          this.dom.btnSaveContacts.addEventListener('click', () => {
+            ContactsManager.save();
+            this.log('Contatos salvos no storage local', LOG_TYPES.SUCCESS);
+            this.toast('Contatos salvos', 'success');
           });
 
           // Incoming call modal
@@ -3200,21 +3261,24 @@
               domain: this.dom.domain.value,
               pass: this.dom.pass.value
             },
-            contacts: ContactsManager.contacts
+            theme: Storage.get(STORAGE_KEYS.THEME, 'dark'),
+            contacts: ContactsManager.contacts,
+            history: CallHistory.calls,
+            logs: this.logs.slice(-100)
           };
 
           const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = `softphone-config-${new Date().toISOString().slice(0, 10)}.json`;
+          a.download = `softphone-wss-backup-${new Date().toISOString().slice(0, 10)}.json`;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
 
-          this.log('Configuracao exportada com sucesso', LOG_TYPES.SUCCESS);
-          this.toast('Configuracao exportada', 'success');
+          this.log('Backup completo exportado (config, contatos, historico, tema)', LOG_TYPES.SUCCESS);
+          this.toast('Backup exportado com sucesso', 'success');
         },
 
         importConfig(e) {
@@ -3226,12 +3290,20 @@
             try {
               const data = JSON.parse(event.target.result);
               
+              let imported = [];
+
               if (data.config) {
                 if (data.config.wss) this.dom.wss.value = data.config.wss;
                 if (data.config.user) this.dom.user.value = data.config.user;
                 if (data.config.domain) this.dom.domain.value = data.config.domain;
                 if (data.config.pass) this.dom.pass.value = data.config.pass;
                 this.saveConfig();
+                imported.push('configuracoes');
+              }
+
+              if (data.theme) {
+                this.setTheme(data.theme);
+                imported.push('tema');
               }
 
               if (data.contacts && Array.isArray(data.contacts)) {
@@ -3240,10 +3312,20 @@
                 ContactsManager.render();
                 ContactsManager.renderFavorites();
                 ContactsManager.updateCounts();
+                imported.push(`${data.contacts.length} contatos`);
               }
 
-              this.log('Configuracao importada com sucesso', LOG_TYPES.SUCCESS);
-              this.toast('Configuracao importada', 'success');
+              if (data.history && Array.isArray(data.history)) {
+                CallHistory.calls = data.history;
+                CallHistory.save();
+                CallHistory.render();
+                CallHistory.updateCount();
+                imported.push(`${data.history.length} chamadas`);
+              }
+
+              const importSummary = imported.join(', ');
+              this.log(`Backup importado: ${importSummary}`, LOG_TYPES.SUCCESS);
+              this.toast('Backup importado com sucesso', 'success');
 
             } catch (error) {
               this.log(`[${ERROR_CODES.STORAGE}] Erro ao importar: ${error.message}`, LOG_TYPES.ERROR);
