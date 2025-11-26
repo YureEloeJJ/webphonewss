@@ -1373,6 +1373,16 @@
       background: var(--bg-hover);
     }
 
+    .transcript-btn.recording {
+      color: var(--danger);
+      animation: pulse-recording 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-recording {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
     .transcript-area {
       flex: 1;
       overflow-y: auto;
@@ -1415,95 +1425,169 @@
       opacity: 0.7;
     }
 
-    .transcript-call {
+    /* Live Transcript Messages */
+    .transcript-live {
       background: var(--bg-tertiary);
-      border-radius: var(--radius);
-      padding: 14px;
-      margin-bottom: 10px;
       border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      margin-bottom: 10px;
     }
 
-    .transcript-call-header {
+    .transcript-live-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 10px;
-      padding-bottom: 10px;
+      padding-bottom: 8px;
       border-bottom: 1px solid var(--border);
     }
 
-    .transcript-call-info {
+    .transcript-live-status {
       display: flex;
-      flex-direction: column;
-      gap: 2px;
+      align-items: center;
+      gap: 8px;
     }
 
-    .transcript-call-number {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text-primary);
+    .transcript-live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-muted);
+    }
+
+    .transcript-live-dot.active {
+      background: var(--danger);
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .transcript-live-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .transcript-live-number {
+      font-size: 12px;
+      color: var(--text-muted);
       font-variant-numeric: tabular-nums;
     }
 
-    .transcript-call-date {
-      font-size: 11px;
-      color: var(--text-muted);
+    .transcript-messages {
+      max-height: 300px;
+      overflow-y: auto;
     }
 
-    .transcript-call-badge {
-      font-size: 10px;
-      font-weight: 600;
-      padding: 4px 8px;
-      border-radius: var(--radius-sm);
-      text-transform: uppercase;
-    }
-
-    .transcript-call-badge.incoming {
-      background: var(--accent-glow);
-      color: var(--accent);
-    }
-
-    .transcript-call-badge.outgoing {
-      background: var(--success-glow);
-      color: var(--success);
-    }
-
-    .transcript-call-badge.missed {
-      background: var(--danger-glow);
-      color: var(--danger);
-    }
-
-    .transcript-call-stats {
-      display: flex;
-      gap: 16px;
-    }
-
-    .transcript-stat {
+    .transcript-message {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      margin-bottom: 12px;
+      animation: fadeIn 0.3s ease;
     }
 
-    .transcript-stat-label {
-      font-size: 10px;
-      color: var(--text-muted);
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .transcript-message:last-child {
+      margin-bottom: 0;
+    }
+
+    .transcript-message-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .transcript-message-sender {
+      font-size: 11px;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.3px;
     }
 
-    .transcript-stat-value {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      font-variant-numeric: tabular-nums;
+    .transcript-message-sender.you {
+      color: var(--accent);
     }
 
-    .transcript-call-delete {
+    .transcript-message-sender.remote {
+      color: var(--success);
+    }
+
+    .transcript-message-time {
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    .transcript-message-text {
+      font-size: 13px;
+      color: var(--text-primary);
+      line-height: 1.5;
+      padding: 8px 12px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      border-left: 3px solid var(--accent);
+    }
+
+    .transcript-message.remote .transcript-message-text {
+      border-left-color: var(--success);
+    }
+
+    .transcript-message-text.interim {
+      opacity: 0.6;
+      font-style: italic;
+    }
+
+    /* Saved Transcripts */
+    .transcript-saved {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+
+    .transcript-saved-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .transcript-saved-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .transcript-saved-number {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .transcript-saved-date {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .transcript-saved-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .transcript-saved-btn {
       background: none;
       border: none;
       color: var(--text-muted);
       cursor: pointer;
-      padding: 4px;
+      padding: 6px;
       border-radius: 4px;
       transition: all var(--transition-fast);
       display: flex;
@@ -1511,15 +1595,77 @@
       justify-content: center;
     }
 
-    .transcript-call-delete:hover {
+    .transcript-saved-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .transcript-saved-btn.delete:hover {
       color: var(--danger);
       background: var(--danger-glow);
     }
 
-    .transcript-call-delete svg {
+    .transcript-saved-btn svg {
       width: 14px;
       height: 14px;
       fill: currentColor;
+    }
+
+    .transcript-saved-content {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .transcript-saved-message {
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .transcript-saved-message:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .transcript-saved-message-sender {
+      font-weight: 600;
+      font-size: 10px;
+      text-transform: uppercase;
+      margin-right: 6px;
+    }
+
+    .transcript-saved-message-sender.you {
+      color: var(--accent);
+    }
+
+    .transcript-saved-message-sender.remote {
+      color: var(--success);
+    }
+
+    /* Speech Recognition Status */
+    .speech-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: var(--bg-tertiary);
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .speech-status-icon {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    .speech-status.active {
+      color: var(--success);
+    }
+
+    .speech-status.error {
+      color: var(--danger);
     }
 
     /* Export/Import Buttons */
@@ -1911,6 +2057,8 @@
       <button class="tab active" data-tab="dialer" role="tab" aria-selected="true">Discador</button>
       <button class="tab" data-tab="contacts" role="tab" aria-selected="false">Contatos</button>
       <button class="tab" data-tab="favorites" role="tab" aria-selected="false">Favoritos</button>
+      <!-- Adicionando aba Transcript -->
+      <button class="tab" data-tab="transcript" role="tab" aria-selected="false">Transcript</button>
       <button class="tab" data-tab="history" role="tab" aria-selected="false">Historico</button>
       <button class="tab" data-tab="config" role="tab" aria-selected="false">Config</button>
       <button class="tab" data-tab="log" role="tab" aria-selected="false">Log</button>
@@ -2079,6 +2227,57 @@
       </div>
     </section>
 
+    <!-- Nova aba Transcript com transcricao em tempo real -->
+    <section class="panel" id="panel-transcript" role="tabpanel">
+      <div class="transcript-container">
+        <div class="transcript-header">
+          <div style="display:flex;align-items:center;">
+            <span class="transcript-title">Transcript</span>
+            <span class="transcript-count" id="transcriptCount">0</span>
+          </div>
+          <div class="transcript-actions">
+            <button class="transcript-btn" id="btnToggleSpeech" type="button" title="Ativar/Desativar transcricao">
+              <span id="speechBtnText">Iniciar</span>
+            </button>
+            <button class="transcript-btn" id="btnExportTranscript" type="button">Exportar</button>
+            <button class="transcript-btn" id="btnClearTranscript" type="button">Limpar</button>
+          </div>
+        </div>
+        
+        <!-- Status da transcricao -->
+        <div class="speech-status" id="speechStatus">
+          <svg class="speech-status-icon" viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+          <span id="speechStatusText">Transcricao desativada</span>
+        </div>
+
+        <div class="transcript-area" id="transcriptArea">
+          <!-- Transcricao ao vivo durante chamada -->
+          <div class="transcript-live" id="transcriptLive" style="display:none;">
+            <div class="transcript-live-header">
+              <div class="transcript-live-status">
+                <span class="transcript-live-dot" id="transcriptLiveDot"></span>
+                <span class="transcript-live-label">Ao Vivo</span>
+              </div>
+              <span class="transcript-live-number" id="transcriptLiveNumber"></span>
+            </div>
+            <div class="transcript-messages" id="transcriptMessages"></div>
+          </div>
+
+          <!-- Estado vazio -->
+          <div class="transcript-empty" id="transcriptEmpty">
+            <div class="transcript-empty-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+            </div>
+            <div class="transcript-empty-text">Nenhuma transcricao</div>
+            <div class="transcript-empty-hint">Inicie uma chamada para ver a transcricao em tempo real</div>
+          </div>
+
+          <!-- Lista de transcricoes salvas -->
+          <div id="transcriptList"></div>
+        </div>
+      </div>
+    </section>
+
     <!-- Historico de Chamadas -->
     <section class="panel" id="panel-history" role="tabpanel">
       <div class="transcript-container">
@@ -2205,8 +2404,8 @@
   <script>
     /**
      * Softphone WSS - Sistema VoIP WebSocket
-     * @version 6.0
-     * @description Softphone com Contatos, Favoritos e Estatisticas de Rede
+     * @version 7.0
+     * @description Softphone com Transcript em tempo real
      */
     (function() {
       'use strict';
@@ -2214,7 +2413,7 @@
       // ============================================
       // CONSTANTS
       // ============================================
-      const VERSION = '6.0';
+      const VERSION = '7.0';
       const APP_NAME = 'Softphone WSS';
       
       const STORAGE_KEYS = Object.freeze({
@@ -2223,6 +2422,7 @@
         LOGS: 'softphone_wss_logs',
         HISTORY: 'softphone_wss_history',
         CONTACTS: 'softphone_wss_contacts',
+        TRANSCRIPTS: 'softphone_wss_transcripts',
         CREDITS_CLOSED: 'softphone_wss_credits_closed'
       });
 
@@ -2987,6 +3187,472 @@
       };
 
       // ============================================
+      // ============================================
+      const SpeechManager = {
+        recognition: null,
+        isListening: false,
+        isSupported: false,
+        currentTranscript: [],
+        interimText: '',
+
+        init() {
+          // Check browser support
+          const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+          
+          if (!SpeechRecognition) {
+            this.isSupported = false;
+            Softphone.log('Speech Recognition nao suportado neste navegador', LOG_TYPES.WARNING);
+            this.updateStatus('Nao suportado', 'error');
+            return;
+          }
+
+          this.isSupported = true;
+          this.recognition = new SpeechRecognition();
+          this.configureRecognition();
+          
+          Softphone.log('Speech Recognition inicializado', LOG_TYPES.SUCCESS);
+          this.updateStatus('Transcricao desativada', '');
+        },
+
+        configureRecognition() {
+          if (!this.recognition) return;
+
+          this.recognition.continuous = true;
+          this.recognition.interimResults = true;
+          this.recognition.lang = 'pt-BR';
+          this.recognition.maxAlternatives = 1;
+
+          this.recognition.onstart = () => {
+            this.isListening = true;
+            this.updateStatus('Ouvindo...', 'active');
+            this.updateButton(true);
+            Utils.$('transcriptLiveDot').classList.add('active');
+            Softphone.log('Transcricao iniciada', LOG_TYPES.INFO);
+          };
+
+          this.recognition.onend = () => {
+            // Auto-restart if still should be listening
+            if (this.isListening && Softphone.isInCall) {
+              try {
+                this.recognition.start();
+              } catch (e) {
+                // Ignore
+              }
+            } else {
+              this.isListening = false;
+              this.updateStatus('Transcricao pausada', '');
+              this.updateButton(false);
+              Utils.$('transcriptLiveDot').classList.remove('active');
+            }
+          };
+
+          this.recognition.onerror = (event) => {
+            let errorMsg = 'Erro desconhecido';
+            
+            switch (event.error) {
+              case 'no-speech':
+                errorMsg = 'Nenhuma fala detectada';
+                break;
+              case 'audio-capture':
+                errorMsg = 'Microfone nao encontrado';
+                break;
+              case 'not-allowed':
+                errorMsg = 'Permissao de microfone negada';
+                break;
+              case 'network':
+                errorMsg = 'Erro de rede';
+                break;
+              case 'aborted':
+                errorMsg = 'Transcricao cancelada';
+                break;
+              default:
+                errorMsg = event.error;
+            }
+
+            Softphone.log(`Speech Recognition erro: ${errorMsg}`, LOG_TYPES.ERROR);
+            this.updateStatus(errorMsg, 'error');
+
+            if (event.error === 'not-allowed') {
+              Softphone.toast('Permita o acesso ao microfone', 'error');
+            }
+          };
+
+          this.recognition.onresult = (event) => {
+            let interimTranscript = '';
+            let finalTranscript = '';
+
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+              const transcript = event.results[i][0].transcript;
+              
+              if (event.results[i].isFinal) {
+                finalTranscript += transcript;
+              } else {
+                interimTranscript += transcript;
+              }
+            }
+
+            // Show interim results
+            if (interimTranscript) {
+              this.interimText = interimTranscript;
+              this.renderInterimMessage(interimTranscript);
+            }
+
+            // Save final results
+            if (finalTranscript) {
+              this.addMessage('you', finalTranscript.trim());
+              this.interimText = '';
+            }
+          };
+        },
+
+        start() {
+          if (!this.isSupported) {
+            Softphone.toast('Transcricao nao suportada', 'error');
+            return;
+          }
+
+          if (this.isListening) return;
+
+          try {
+            this.recognition.start();
+            this.showLivePanel();
+          } catch (error) {
+            Softphone.log(`Erro ao iniciar transcricao: ${error.message}`, LOG_TYPES.ERROR);
+          }
+        },
+
+        stop() {
+          if (!this.recognition) return;
+
+          this.isListening = false;
+          
+          try {
+            this.recognition.stop();
+          } catch (e) {
+            // Ignore
+          }
+
+          this.updateStatus('Transcricao pausada', '');
+          this.updateButton(false);
+          Utils.$('transcriptLiveDot').classList.remove('active');
+        },
+
+        toggle() {
+          if (this.isListening) {
+            this.stop();
+          } else {
+            this.start();
+          }
+        },
+
+        addMessage(sender, text) {
+          if (!text.trim()) return;
+
+          const message = {
+            id: Utils.generateId(),
+            sender: sender, // 'you' or 'remote'
+            text: text.trim(),
+            time: new Date().toISOString()
+          };
+
+          this.currentTranscript.push(message);
+          this.renderMessage(message);
+          this.updateCount();
+
+          Softphone.log(`Transcript [${sender}]: ${text}`, LOG_TYPES.DEBUG);
+        },
+
+        renderMessage(message) {
+          const container = Utils.$('transcriptMessages');
+          if (!container) return;
+
+          // Remove interim message
+          const interim = container.querySelector('.transcript-message.interim');
+          if (interim) interim.remove();
+
+          const div = document.createElement('div');
+          div.className = `transcript-message ${message.sender}`;
+          div.innerHTML = `
+            <div class="transcript-message-header">
+              <span class="transcript-message-sender ${message.sender}">${message.sender === 'you' ? 'Voce' : 'Remoto'}</span>
+              <span class="transcript-message-time">${Utils.formatTime(new Date(message.time))}</span>
+            </div>
+            <div class="transcript-message-text">${Utils.escapeHtml(message.text)}</div>
+          `;
+
+          container.appendChild(div);
+          container.scrollTop = container.scrollHeight;
+        },
+
+        renderInterimMessage(text) {
+          const container = Utils.$('transcriptMessages');
+          if (!container) return;
+
+          // Remove existing interim
+          const existing = container.querySelector('.transcript-message.interim');
+          if (existing) existing.remove();
+
+          const div = document.createElement('div');
+          div.className = 'transcript-message you interim';
+          div.innerHTML = `
+            <div class="transcript-message-header">
+              <span class="transcript-message-sender you">Voce</span>
+              <span class="transcript-message-time">...</span>
+            </div>
+            <div class="transcript-message-text interim">${Utils.escapeHtml(text)}</div>
+          `;
+
+          container.appendChild(div);
+          container.scrollTop = container.scrollHeight;
+        },
+
+        showLivePanel() {
+          Utils.$('transcriptLive').style.display = 'block';
+          Utils.$('transcriptEmpty').style.display = 'none';
+          Utils.$('transcriptLiveNumber').textContent = Softphone.currentCallNumber || 'Chamada';
+        },
+
+        hideLivePanel() {
+          Utils.$('transcriptLive').style.display = 'none';
+        },
+
+        saveCurrentTranscript() {
+          if (this.currentTranscript.length === 0) return;
+
+          const transcript = {
+            id: Utils.generateId(),
+            number: Softphone.currentCallNumber || 'Desconhecido',
+            date: new Date().toISOString(),
+            messages: [...this.currentTranscript],
+            duration: Softphone.callStartTime ? 
+              Math.floor((new Date() - Softphone.callStartTime) / 1000) : 0
+          };
+
+          TranscriptHistory.add(transcript);
+          
+          this.currentTranscript = [];
+          Utils.$('transcriptMessages').innerHTML = '';
+          
+          Softphone.log(`Transcript salvo: ${transcript.messages.length} mensagens`, LOG_TYPES.SUCCESS);
+        },
+
+        updateStatus(text, className) {
+          const statusEl = Utils.$('speechStatus');
+          const textEl = Utils.$('speechStatusText');
+          
+          if (textEl) textEl.textContent = text;
+          if (statusEl) {
+            statusEl.className = 'speech-status';
+            if (className) statusEl.classList.add(className);
+          }
+        },
+
+        updateButton(isRecording) {
+          const btn = Utils.$('btnToggleSpeech');
+          const text = Utils.$('speechBtnText');
+          
+          if (btn) btn.classList.toggle('recording', isRecording);
+          if (text) text.textContent = isRecording ? 'Parar' : 'Iniciar';
+        },
+
+        updateCount() {
+          const countEl = Utils.$('transcriptCount');
+          if (countEl) {
+            const total = TranscriptHistory.transcripts.length + 
+              (this.currentTranscript.length > 0 ? 1 : 0);
+            countEl.textContent = total;
+          }
+        },
+
+        clear() {
+          this.currentTranscript = [];
+          Utils.$('transcriptMessages').innerHTML = '';
+          this.updateCount();
+        },
+
+        startForCall() {
+          this.currentTranscript = [];
+          Utils.$('transcriptMessages').innerHTML = '';
+          this.showLivePanel();
+          
+          // Auto-start if supported
+          if (this.isSupported) {
+            this.start();
+          }
+        },
+
+        endForCall() {
+          this.stop();
+          this.saveCurrentTranscript();
+          this.hideLivePanel();
+          
+          // Check if should show empty state
+          if (TranscriptHistory.transcripts.length === 0) {
+            Utils.$('transcriptEmpty').style.display = 'flex';
+          }
+        }
+      };
+
+      // ============================================
+      // ============================================
+      const TranscriptHistory = {
+        transcripts: [],
+        MAX_TRANSCRIPTS: 50,
+
+        init() {
+          this.transcripts = Storage.get(STORAGE_KEYS.TRANSCRIPTS, []);
+          this.render();
+          SpeechManager.updateCount();
+        },
+
+        add(transcript) {
+          this.transcripts.unshift(transcript);
+          
+          if (this.transcripts.length > this.MAX_TRANSCRIPTS) {
+            this.transcripts = this.transcripts.slice(0, this.MAX_TRANSCRIPTS);
+          }
+
+          this.save();
+          this.render();
+          SpeechManager.updateCount();
+        },
+
+        remove(id) {
+          this.transcripts = this.transcripts.filter(t => t.id !== id);
+          this.save();
+          this.render();
+          SpeechManager.updateCount();
+          
+          if (this.transcripts.length === 0) {
+            Utils.$('transcriptEmpty').style.display = 'flex';
+          }
+        },
+
+        clear() {
+          this.transcripts = [];
+          this.save();
+          this.render();
+          SpeechManager.updateCount();
+          Utils.$('transcriptEmpty').style.display = 'flex';
+          Softphone.log('Transcripts limpos', LOG_TYPES.INFO);
+        },
+
+        save() {
+          Storage.set(STORAGE_KEYS.TRANSCRIPTS, this.transcripts);
+        },
+
+        render() {
+          const container = Utils.$('transcriptList');
+          const emptyState = Utils.$('transcriptEmpty');
+          
+          if (!container) return;
+
+          if (this.transcripts.length === 0) {
+            container.innerHTML = '';
+            if (emptyState && !SpeechManager.isListening) {
+              emptyState.style.display = 'flex';
+            }
+            return;
+          }
+
+          if (emptyState) emptyState.style.display = 'none';
+
+          const fragment = document.createDocumentFragment();
+
+          this.transcripts.forEach(transcript => {
+            const div = document.createElement('div');
+            div.className = 'transcript-saved';
+            
+            const messagesHtml = transcript.messages.slice(0, 5).map(msg => `
+              <div class="transcript-saved-message">
+                <span class="transcript-saved-message-sender ${msg.sender}">${msg.sender === 'you' ? 'Voce' : 'Remoto'}:</span>
+                ${Utils.escapeHtml(msg.text)}
+              </div>
+            `).join('');
+
+            const moreCount = transcript.messages.length > 5 ? 
+              `<div class="transcript-saved-message" style="color:var(--text-muted);font-style:italic;">... e mais ${transcript.messages.length - 5} mensagens</div>` : '';
+
+            div.innerHTML = `
+              <div class="transcript-saved-header">
+                <div class="transcript-saved-info">
+                  <span class="transcript-saved-number">${Utils.escapeHtml(transcript.number)}</span>
+                  <span class="transcript-saved-date">${Utils.formatDate(new Date(transcript.date))} - ${Utils.formatDuration(transcript.duration)}</span>
+                </div>
+                <div class="transcript-saved-actions">
+                  <button class="transcript-saved-btn copy" data-id="${transcript.id}" title="Copiar">
+                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                  </button>
+                  <button class="transcript-saved-btn delete" data-id="${transcript.id}" title="Remover">
+                    <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="transcript-saved-content">
+                ${messagesHtml}
+                ${moreCount}
+              </div>
+            `;
+
+            fragment.appendChild(div);
+          });
+
+          container.innerHTML = '';
+          container.appendChild(fragment);
+
+          // Bind events
+          container.querySelectorAll('.transcript-saved-btn.copy').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const transcript = this.transcripts.find(t => t.id === btn.dataset.id);
+              if (transcript) {
+                const text = transcript.messages.map(m => 
+                  `[${m.sender === 'you' ? 'Voce' : 'Remoto'}] ${m.text}`
+                ).join('\n');
+                
+                navigator.clipboard.writeText(text).then(() => {
+                  Softphone.toast('Transcript copiado', 'success');
+                }).catch(() => {
+                  Softphone.toast('Erro ao copiar', 'error');
+                });
+              }
+            });
+          });
+
+          container.querySelectorAll('.transcript-saved-btn.delete').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              if (confirm('Remover este transcript?')) {
+                this.remove(btn.dataset.id);
+              }
+            });
+          });
+        },
+
+        export() {
+          const data = {
+            app: APP_NAME,
+            version: VERSION,
+            exportDate: new Date().toISOString(),
+            transcripts: this.transcripts
+          };
+
+          const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `transcripts-${new Date().toISOString().slice(0, 10)}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+
+          Softphone.log('Transcripts exportados', LOG_TYPES.SUCCESS);
+          Softphone.toast('Transcripts exportados', 'success');
+        }
+      };
+
+      // ============================================
       // MAIN SOFTPHONE MODULE
       // ============================================
       const Softphone = {
@@ -3011,6 +3677,8 @@
           this.checkCreditsPopup();
           CallHistory.init();
           ContactsManager.init();
+          TranscriptHistory.init(); // Initialize transcript history
+          SpeechManager.init(); // Initialize speech recognition
 
           if (checkJsSIP()) {
             this.log(`${APP_NAME} v${VERSION} inicializado`, LOG_TYPES.SUCCESS);
@@ -3067,7 +3735,21 @@
             contactsSearch: Utils.$('contactsSearch'),
             contactName: Utils.$('contactName'),
             contactNumber: Utils.$('contactNumber'),
-            btnSaveContacts: Utils.$('btnSaveContacts') // Added btnSaveContacts
+            btnSaveContacts: Utils.$('btnSaveContacts'), // Added btnSaveContacts
+            // Transcript DOM elements
+            btnToggleSpeech: Utils.$('btnToggleSpeech'),
+            speechBtnText: Utils.$('speechBtnText'),
+            speechStatus: Utils.$('speechStatus'),
+            speechStatusText: Utils.$('speechStatusText'),
+            transcriptLive: Utils.$('transcriptLive'),
+            transcriptLiveDot: Utils.$('transcriptLiveDot'),
+            transcriptLiveNumber: Utils.$('transcriptLiveNumber'),
+            transcriptMessages: Utils.$('transcriptMessages'),
+            transcriptEmpty: Utils.$('transcriptEmpty'),
+            transcriptList: Utils.$('transcriptList'),
+            transcriptCount: Utils.$('transcriptCount'),
+            btnExportTranscript: Utils.$('btnExportTranscript'),
+            btnClearTranscript: Utils.$('btnClearTranscript')
           };
         },
 
@@ -3149,6 +3831,16 @@
 
           // Keyboard
           document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+
+          this.dom.btnToggleSpeech.addEventListener('click', () => SpeechManager.toggle());
+          this.dom.btnExportTranscript.addEventListener('click', () => TranscriptHistory.export());
+          this.dom.btnClearTranscript.addEventListener('click', () => {
+            if (confirm('Limpar todos os transcripts?')) {
+              TranscriptHistory.clear();
+              SpeechManager.clear();
+              this.toast('Transcripts limpos', 'success');
+            }
+          });
         },
 
         switchTab(tabId) {
@@ -3264,6 +3956,7 @@
             theme: Storage.get(STORAGE_KEYS.THEME, 'dark'),
             contacts: ContactsManager.contacts,
             history: CallHistory.calls,
+            transcripts: TranscriptHistory.transcripts, // Include transcripts
             logs: this.logs.slice(-100)
           };
 
@@ -3321,6 +4014,14 @@
                 CallHistory.render();
                 CallHistory.updateCount();
                 imported.push(`${data.history.length} chamadas`);
+              }
+              
+              if (data.transcripts && Array.isArray(data.transcripts)) {
+                TranscriptHistory.transcripts = data.transcripts;
+                TranscriptHistory.save();
+                TranscriptHistory.render();
+                SpeechManager.updateCount();
+                imported.push(`${data.transcripts.length} transcripts`);
               }
 
               const importSummary = imported.join(', ');
@@ -3683,6 +4384,8 @@
             this.dom.btnCall.disabled = true;
             this.dom.btnHangup.disabled = false;
             this.log('Chamada confirmada - audio ativo', LOG_TYPES.SUCCESS);
+            
+            SpeechManager.startForCall();
           });
 
           session.on('ended', (e) => {
@@ -3733,6 +4436,8 @@
         },
 
         endCall(message) {
+          SpeechManager.endForCall();
+
           const duration = this.callStartTime ? 
             Math.floor((new Date() - this.callStartTime) / 1000) : 0;
 
@@ -3929,6 +4634,8 @@
       window.CallHistory = CallHistory;
       window.ContactsManager = ContactsManager;
       window.NetworkStats = NetworkStats;
+      window.SpeechManager = SpeechManager; // Expose SpeechManager
+      window.TranscriptHistory = TranscriptHistory; // Expose TranscriptHistory
 
     })();
   </script>
